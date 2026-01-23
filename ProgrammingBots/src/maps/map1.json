@@ -1,0 +1,15 @@
+{
+  "objects": [
+    { "type": "grass", "x": 0, "y": 0 },
+    { "type": "grass", "x": 1, "y": 0 },
+    { "type": "grass", "x": 2, "y": 0 },
+
+    { "type": "sand", "x": 0, "y": 1 },
+    { "type": "sand", "x": 1, "y": 1 },
+
+    { "type": "tree", "x": 4, "y": 3 },
+    { "type": "rock_big", "x": 6, "y": 6 },
+
+    { "type": "house", "x": 10, "y": 10 }
+  ]
+}

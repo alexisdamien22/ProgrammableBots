@@ -1,0 +1,7 @@
+{
+  "grass": {
+    "src": "tiles/grass.png",
+    "w": 1,
+    "h": 1
+  }
+}
