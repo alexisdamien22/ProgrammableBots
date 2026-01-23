@@ -1,0 +1,7 @@
+{
+  "player": {
+    "src": "units/player.png",
+    "w": 1,
+    "h": 1
+  }
+}
