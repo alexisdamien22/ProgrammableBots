@@ -3,6 +3,11 @@ import { assets } from "../core/assets.js";
 
 export function drawAsset(ctx, obj, x, y, tileSize, camera) {
     const asset = assets.get(obj.type);
+    
+    if (!asset) {
+        console.warn("Missing asset:", obj.type);
+        return;
+    }
 
     if (obj.localOffset.dx !== 0 || obj.localOffset.dy !== 0) return;
 
