@@ -3,5 +3,17 @@
     "src": "tiles/grass.png",
     "w": 1,
     "h": 1
+  },
+
+  "sand": {
+    "src": "tiles/sand.png",
+    "w": 1,
+    "h": 1
+  },
+
+  "water": {
+    "src": "tiles/water.png",
+    "w": 1,
+    "h": 1
   }
 }
