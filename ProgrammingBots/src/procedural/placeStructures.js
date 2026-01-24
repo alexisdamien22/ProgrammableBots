@@ -4,7 +4,7 @@ function canPlace(grid, x, y, asset) {
     for (let dx = 0; dx < asset.w; dx++) {
         for (let dy = 0; dy < asset.h; dy++) {
             if (!grid[y + dy] || !grid[y + dy][x + dx]) return false;
-            if (grid[y + dy][x + dx].type !== "grass") return false;
+            if (grid[y + dy][x + dx].type !== "grass_red" || grid[y + dy][x + dx].type !== "grass_blue") return false;
         }
     }
     return true;

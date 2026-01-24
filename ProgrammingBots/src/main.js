@@ -17,9 +17,6 @@ const grid = createGrid(500, 500);
 
 camera.init(canvas, () => drawGrid(ctx, grid, tileSize, camera));
 
-assets.load("grass", "assets/tiles/grass.png", 1, 1);
-assets.load("house", "assets/objects/house.png", 3, 2);
-
 await loadAssets();
 generateMap(grid);
 drawGrid(ctx, grid, tileSize, camera); // dessine
