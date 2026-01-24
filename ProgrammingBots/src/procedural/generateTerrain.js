@@ -2,24 +2,30 @@ import { Noise } from "./noise.js";
 import { addAssetToGrid } from "../core/grid.js";
 
 export function generateTerrain(grid, seed = 1) {
-    const biomeNoise = new Noise(seed);
+    const temperatureNoise = new Noise(seed);
+    const humidityNoise = new Noise(seed+50);
     const terrainNoise = new Noise(seed + 100); // détails sol
     const waterNoise   = new Noise(seed + 200); // lacs/rivières pour plaine/forêt
+    const acidNoise   = new Noise(seed + 300);  // lacs d'acide
 
-    const biomeScale   = 0.01;   // taille des biomes
+    const biomeScale = 0.5;
     const terrainScale = 0.01;    // détails du sol
     const waterScale   = 0.09;    // détails des lacs/rivières
+    const acidScale  = 0.2;       // détails des lacs d'acide
     const waterThreshold = -0.2;  // seuil pour eau
-    const acidThreshold  = 0.15;  // seuil pour acid
+    const acidThreshold  = -0.2;   // seuil pour acid
+    const temperatureScale = 0.04;  // grandes zones
+    const humidityScale  = 0.07;  // plus de variation   
 
     for (let y = 0; y < grid.length; y++) {
         for (let x = 0; x < grid[y].length; x++) {
 
-            const b = biomeNoise.perlin(x * biomeScale, y * biomeScale);
+            const temperature = temperatureNoise.perlin(x * temperatureScale * biomeScale, y * temperatureScale  * biomeScale);
+            const humidity = humidityNoise.perlin(x * humidityScale  * biomeScale, y * humidityScale  * biomeScale);
 
             let biome;
-            if (b < 0.33) biome = "plain";
-            else if (b < 0.66) biome = "forest";
+            if (temperature < 0.4 && humidity < 0.01) biome = "plain";
+            else if (temperature < 0.4 && humidity >= 0.01) biome = "forest";
             else biome = "acid";
 
             // bruit pour le sol
@@ -36,8 +42,8 @@ export function generateTerrain(grid, seed = 1) {
                     type = biome === "plain" ? "grass_blue" : "grass_red";
                 }
             } else if (biome === "acid") {
-                // zone acide a ses propres lacs
-                if (t < acidThreshold) type = "acid_lake";
+                const a = acidNoise.perlin(x * acidScale, y * acidScale);
+                if (a < acidThreshold) type = "acid_lake";
                 else type = "acid_ground";
             }
 

@@ -1,7 +1,6 @@
 import './styles/style.css';
 import { camera } from "./core/camera.js";
 import { createGrid } from "./core/grid.js";
-import { assets } from "./core/assets.js";
 import { drawGrid } from "./render/drawGrid.js";
 import { loadAssets } from "./loader/loadAssets.js";
 import { generateMap } from "./procedural/generateMap.js";
@@ -18,5 +17,5 @@ const grid = createGrid(500, 500);
 camera.init(canvas, () => drawGrid(ctx, grid, tileSize, camera));
 
 await loadAssets();
-generateMap(grid);
+generateMap(grid, 1);
 drawGrid(ctx, grid, tileSize, camera); // dessine
