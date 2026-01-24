@@ -11,25 +11,25 @@ export const camera = {
         this.offsetX = canvas.width / 2;
         this.offsetY = canvas.height / 4;
 
-        canvas.addEventListener("wheel", e => {
-            e.preventDefault();
-            this.zoom *= e.deltaY < 0 ? this.zoomFactor : 1 / this.zoomFactor;
-            this.zoom = Math.max(0.1, Math.min(this.zoom, 5));
+        canvas.addEventListener("wheel", (event) => {
+            event.preventDefault();
+            this.zoom *= event.deltaY < 0 ? this.zoomFactor : 1 / this.zoomFactor;
+            this.zoom = Math.max(0.5, Math.min(this.zoom, 5));
             onChange();
         });
 
-        canvas.addEventListener("mousedown", e => {
+        canvas.addEventListener("mousedown", (event) => {
             this.isDragging = true;
-            this.lastX = e.clientX;
-            this.lastY = e.clientY;
+            this.lastX = event.clientX;
+            this.lastY = event.clientY;
         });
 
-        canvas.addEventListener("mousemove", e => {
+        canvas.addEventListener("mousemove", (event) => {
             if (!this.isDragging) return;
-            this.offsetX += e.clientX - this.lastX;
-            this.offsetY += e.clientY - this.lastY;
-            this.lastX = e.clientX;
-            this.lastY = e.clientY;
+            this.offsetX += event.clientX - this.lastX;
+            this.offsetY += event.clientY - this.lastY;
+            this.lastX = event.clientX;
+            this.lastY = event.clientY;
             onChange();
         });
 

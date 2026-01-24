@@ -1,4 +1,4 @@
-import './assets/styles/style.css'
+import './styles/style.css'
 import { camera } from "./core/camera.js";
 import { createGrid } from "./core/grid.js";
 import { assets } from "./core/assets.js";
@@ -20,6 +20,6 @@ camera.init(canvas, () => drawGrid(ctx, grid, tileSize, camera));
 assets.load("grass", "assets/tiles/grass.png", 1, 1);
 assets.load("house", "assets/objects/house.png", 3, 2);
 
-await loadAssets(); // charge tiles.json
+await loadAssets();
 await loadMap("./maps/map1.json", grid); // place les objets
 drawGrid(ctx, grid, tileSize, camera); // dessine

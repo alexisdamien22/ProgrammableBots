@@ -2,9 +2,9 @@ import { assets } from "../core/assets.js";
 
 export async function loadAssets() {
     const metaFiles = [
-        "./assets/meta/tiles.json",
-        "./assets/meta/objects.json",
-        "./assets/meta/units.json"
+        "/assets/meta/tiles.json",
+        "/assets/meta/objects.json",
+        "/assets/meta/units.json"
     ];
 
     for (const file of metaFiles) {
@@ -19,7 +19,9 @@ export async function loadAssets() {
 
             for (const name in data) {
                 const a = data[name];
-                assets.load(name, "./assets/" + a.src, a.w, a.h);
+                const imgPath = "/assets/" + a.src;
+                console.log("Loading asset:", name, imgPath);
+                await assets.load(name, imgPath, a.w, a.h);
             }
 
         } catch (err) {
