@@ -1,6 +1,6 @@
 import { drawTile } from "./drawTile.js";
 import { drawAsset } from "./drawAsset.js";
-import { toScreen } from "../core/iso.js";
+import { toScreen } from "../core/isometricTransformations.js";
 
 
 export function drawGrids(ctx, grid, tileSize, camera) {

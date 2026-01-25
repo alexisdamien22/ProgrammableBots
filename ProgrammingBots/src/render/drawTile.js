@@ -1,4 +1,4 @@
-import { toScreen } from "../core/iso.js";
+import { toScreen } from "../core/isometricTransformations.js";
 
 export function drawTile(ctx, x, y, tileSize, camera) {
     const p = toScreen(x, y, tileSize, camera.zoom, camera.offsetX, camera.offsetY);
