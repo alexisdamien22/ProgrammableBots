@@ -4,14 +4,14 @@ function canPlace(grid, x, y, asset) {
     for (let dx = 0; dx < asset.w; dx++) {
         for (let dy = 0; dy < asset.h; dy++) {
             if (!grid[y + dy] || !grid[y + dy][x + dx]) return false;
-            if (grid[y + dy][x + dx].type !== "grass_red" || grid[y + dy][x + dx].type !== "grass_blue") return false;
+            if (grid[y + dy][x + dx].type !== "grass_red" && grid[y + dy][x + dx].type !== "grass_blue") return false;
         }
     }
     return true;
 }
 
-export function placeStructures(grid, count = 20) {
-    const house = assets.get("house");
+export function placeStructures(grid, count = 20, type) {
+    const house = assets.get(type);
     if (!house) return;
 
     for (let i = 0; i < count; i++) {
