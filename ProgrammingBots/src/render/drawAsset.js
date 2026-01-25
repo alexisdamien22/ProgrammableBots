@@ -1,4 +1,4 @@
-import { toScreen } from "../core/iso.js";
+import { toScreen } from "../core/isometricTransformations.js";
 import { assets } from "../core/assets.js";
 
 export function drawAsset(ctx, obj, x, y, tileSize, camera) {
