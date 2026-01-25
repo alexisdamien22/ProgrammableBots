@@ -1,4 +1,4 @@
-import { toScreen } from "../core/iso.js";
+import { toScreen } from "../core/isometricTransformations.js";
 
 export function drawTile(ctx, x, y, tileSize, camera) {
     const p = toScreen(x, y, tileSize, camera.zoom, camera.offsetX, camera.offsetY);
@@ -12,4 +12,4 @@ export function drawTile(ctx, x, y, tileSize, camera) {
 
     ctx.strokeStyle = "rgba(255,255,255,0.1)";
     ctx.stroke();
-}
+}//to have assets
