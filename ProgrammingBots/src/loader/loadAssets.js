@@ -20,7 +20,6 @@ export async function loadAssets() {
             for (const name in data) {
                 const a = data[name];
                 const imgPath = "/assets/" + a.src;
-                console.log("Loading asset:", name, imgPath);
                 await assets.load(name, imgPath, a.w, a.h);
             }
 

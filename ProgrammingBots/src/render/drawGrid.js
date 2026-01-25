@@ -3,22 +3,26 @@ import { drawAsset } from "./drawAsset.js";
 import { toScreen } from "../core/isometricTransformations.js";
 
 
-export function drawGrids(ctx, grid, tileSize, camera) {
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+export function drawGrid(ctx, grid, tileSize, camera, cx = 0, cy = 0) {
+    const chunkSize = grid.length;
 
-    for (let y = 0; y < grid.length; y++) {
+    for (let y = 0; y < chunkSize; y++) {
         for (let x = 0; x < grid[y].length; x++) {
 
-            drawTile(ctx, x, y, tileSize, camera);
+            const worldX = cx * chunkSize + x;
+            const worldY = cy * chunkSize + y;
 
-            for (const obj of grid[y][x]) {
-                drawAsset(ctx, obj, x, y, tileSize, camera);
+            const cell = grid[y][x];
+            if (!cell || cell.length === 0) continue;
+
+            for (const obj of cell) {
+                drawAsset(ctx, obj, worldX, worldY, tileSize, camera);
             }
         }
     }
 }
 
-export function drawGrid(ctx, grid, tileSize, camera) {
+export function drawGrids(ctx, grid, tileSize, camera) {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
     const rows = grid.length;
@@ -26,7 +30,6 @@ export function drawGrid(ctx, grid, tileSize, camera) {
     const zoom = camera.zoom;
     const offsetX = camera.offsetX;
     const offsetY = camera.offsetY;
-    const halfTile = tileSize / 2;
 
     const buffer = 4; // extra tiles to draw beyond visible edges
 

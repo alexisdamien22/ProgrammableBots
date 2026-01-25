@@ -1,3 +1,6 @@
+import { toScreen } from "./isometricTransformations.js";
+import { toGrid } from "./isometricTransformations.js";
+
 export const camera = {
     zoom: 1,
     offsetX: 0,
@@ -7,9 +10,20 @@ export const camera = {
     lastY: 0,
     zoomFactor: 1.1,
 
+    updateWorldPosition(tileSize, canvas) {
+        this.worldX =
+            (canvas.width / 2 - this.offsetX) / (tileSize * this.zoom);
+        this.worldY =
+            (canvas.height / 2 - this.offsetY) / (tileSize * this.zoom);
+        const cameraPos = toGrid(this.worldX, this.worldY, tileSize, this.zoom, this.offsetX, this.offsetY);
+        this.worldX = cameraPos.x;
+        this.worldY = cameraPos.y;
+    },
+
     init(canvas, onChange) {
         this.offsetX = canvas.width / 2;
         this.offsetY = canvas.height / 4;
+        this.onChange = onChange;
 
         canvas.addEventListener("wheel", (event) => {
             event.preventDefault();
@@ -41,5 +55,7 @@ export const camera = {
             canvas.height = window.innerHeight;
             onChange();
         });
+
+        this.onChange();
     }
 };
