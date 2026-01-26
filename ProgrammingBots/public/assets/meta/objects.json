@@ -1,1 +1,37 @@
-{}
+{
+    "spaceShuttle": {
+        "src": "objects/spaceShuttle.png",
+        "w": -5,
+        "h": -5
+    },
+    "tree_1_1": {
+        "src": "objects/tree_1_1.png",
+        "w": -1,
+        "h": -1
+    },
+    "tree_1_2": {
+        "src": "objects/tree_1_2.png",
+        "w": -1,
+        "h": -1
+    },
+    "tree_2_1": {
+        "src": "objects/tree_2_1.png",
+        "w": -1,
+        "h": -1
+    },
+    "tree_2_2": {
+        "src": "objects/tree_2_2.png",
+        "w": -1,
+        "h": -1
+    },
+    "tree_3_1": {
+        "src": "objects/tree_3_1.png",
+        "w": -1,
+        "h": -1
+    },
+    "tree_3_2": {
+        "src": "objects/tree_3_2.png",
+        "w": -1,
+        "h": -1
+    }
+}
