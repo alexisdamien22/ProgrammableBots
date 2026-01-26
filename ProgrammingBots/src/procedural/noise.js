@@ -27,9 +27,16 @@ export class Noise {
         }
     }
 
-    normal(x, y, seed = 1) {
-        const n = x * 374761393 + y * 668265263 + seed * 31;
-        return (Math.sin(n) + 1) * 0.5;
+    random2D(x, y, seed = 0) {
+        let n = x * 0x85ebca6b ^ y * 0xc2b2ae35 ^ seed * 0x27d4eb2f;
+        n ^= n >> 16;
+        n *= 0x7feb352d;
+        n ^= n >> 15;
+        n *= 0x846ca68b;
+        n ^= n >> 16;
+
+        // Convert uint32 → [-1, 1]
+        return (n >>> 0) / 2147483647 * 2 - 1;
     }
 
     fade(t) {
