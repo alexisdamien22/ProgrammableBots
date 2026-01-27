@@ -33,5 +33,20 @@
         "src": "objects/tree_3_2.png",
         "w": -1,
         "h": -1
+    },
+    "solarPanel": {
+        "src": "objects/solarPanel.png",
+        "w": -2,
+        "h": -2
+    },
+    "smelter": {
+        "src": "objects/smelter.png",
+        "w": -2,
+        "h": -2
+    },
+    "crafter": {
+        "src": "objects/crafter.png",
+        "w": -2,
+        "h": -2
     }
 }
