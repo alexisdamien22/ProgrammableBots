@@ -1,0 +1,446 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+* a {
+  text-decoration: none;
+  color: #3e3e3e;
+}
+
+body {
+  height: 100vh;
+  width: 100vw;
+  font-family: "Press Start 2P", cursive;
+  background-image: url(assets/background.png);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Main Menu */
+.mainMenu {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.logo {
+  aspect-ratio: 470/126;
+  height: 250px;
+  margin-bottom: 40px;
+}
+
+.menu {
+  background: #555555c6;
+  padding: 45px 40px;
+  border-radius: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  width: 460px;
+}
+
+.greyButton {
+  font-family: "Press Start 2P", cursive;
+  font-size: 18px;
+  padding: 22px 14px;
+  background: #dcdcdc;
+  color: #3e3e3e;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.2);
+  transition:
+    transform 0.1s ease,
+    box-shadow 0.1s ease;
+}
+
+.greyButton:hover {
+  transform: translateY(-2px);
+}
+
+.greyButton:active {
+  transform: translateY(2px);
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.2);
+}
+
+.quitButton {
+  font-family: "Press Start 2P", cursive;
+  font-size: 18px;
+  padding: 22px 14px;
+  background: #ff6666;
+  color: #3e3e3e;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.25);
+  transition:
+    transform 0.1s ease,
+    box-shadow 0.1s ease;
+}
+
+.quitButton:hover {
+  transform: translateY(-2px);
+}
+
+.quitButton:active {
+  transform: translateY(2px);
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.25);
+}
+
+/* Saves Menu */
+.savesMenu {
+  width: 85%;
+  max-width: 1400px;
+  height: 80%;
+  background: rgba(80, 95, 105, 0.85);
+  border-radius: 26px;
+  padding: 30px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.head p {
+  font-size: 28px;
+  color: #f0f0f0;
+}
+
+.headButtons {
+  display: flex;
+  gap: 16px;
+}
+
+.saves {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+.saves::-webkit-scrollbar {
+  width: 8px;
+}
+
+.saves::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+}
+
+.saves::-webkit-scrollbar-thumb {
+  background: #e5e5e5;
+  border-radius: 10px;
+}
+
+.saveCard {
+  background: #e5e5e5;
+  border-radius: 14px;
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: pointer;
+  color: #333;
+  border: 4px solid transparent;
+}
+
+/*.saveCard:first-child {
+  border: 4px solid #ff3b3b;
+}
+
+.saveCard p:first-child {
+  font-size: 20px;
+}*/
+
+.custom {
+  display: flex;
+  justify-content: space-between;
+  background-color: #dcdcdc6c;
+  padding: 10px;
+  border-radius: 12px;
+  gap: 20px;
+}
+
+.custom button {
+  flex: 1;
+  font-family: "Press Start 2P", cursive;
+  font-size: 18px;
+  padding: 18px 0;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.25);
+}
+
+.createButton {
+  font-family: "Press Start 2P", cursive;
+  font-size: 16px;
+  padding: 14px 22px;
+  background: #6666ff;
+  color: #3e3e3e;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.25);
+}
+
+.backButton {
+  font-family: "Press Start 2P", cursive;
+  font-size: 16px;
+  padding: 14px 22px;
+  background: #dcdcdc;
+  color: #3e3e3e;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.25);
+}
+
+.suppButton {
+  background: #562121;
+  color: #3e3e3e;
+}
+
+.modifButton {
+  background: #333333;
+  color: #3e3e3e;
+}
+
+.playButton {
+  background: #112711;
+  color: #1f3d1f;
+}
+
+.suppButtonActive {
+  background: #ff6b6b;
+  color: #3e3e3e;
+}
+
+.modifButtonActive {
+  background: #e5e5e5;
+  color: #3e3e3e;
+}
+
+.playButtonActive {
+  background: #6dff6d;
+  color: #1f3d1f;
+}
+
+.customActive button:hover,
+.head button:hover {
+  transform: translateY(-2px);
+}
+
+.customActive button:active,
+.head button:active {
+  transform: translateY(2px);
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.25);
+}
+
+/* Menu création */
+.ceateMenu {
+  width: 85%;
+  max-width: 1400px;
+  height: 80%;
+  background: rgba(80, 95, 105, 0.85);
+  border-radius: 28px;
+  padding: 40px 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 70px;
+}
+
+.ceateMenu > p {
+  font-size: 28px;
+  color: #f0f0f0;
+}
+
+.createParam {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 100px;
+}
+
+.saveName,
+.seed {
+  width: 100%;
+  padding: 20px 22px;
+  font-family: "Press Start 2P", cursive;
+  font-size: 18px;
+  background: #dcdcdc85;
+  color: #333;
+  border: 4px solid #111;
+  border-radius: 10px;
+  outline: none;
+}
+
+.saveName::placeholder,
+.seed::placeholder {
+  color: #666;
+}
+
+form p {
+  font-size: 18px;
+  color: #f0f0f0;
+}
+
+.seedSetting {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.genSettings {
+  padding: 20px;
+  font-family: "Press Start 2P", cursive;
+  font-size: 18px;
+  background: #e5e5e5;
+  color: #333;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.25);
+}
+
+.genSettings:hover {
+  transform: translateY(-2px);
+}
+
+.genSettings:active {
+  transform: translateY(2px);
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.25);
+}
+
+.submit {
+  background-color: #dcdcdc6c;
+  padding: 10px;
+  border-radius: 12px;
+  display: flex;
+  gap: 30px;
+}
+
+.submit button {
+  flex: 1;
+  padding: 22px 0;
+  font-family: "Press Start 2P", cursive;
+  font-size: 20px;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.25);
+}
+
+.cancelButton {
+  background: #ff6666;
+  color: #3e3e3e;
+}
+
+.cancelButton a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.submitButton {
+  background: #66ff66;
+  color: #1f3d1f;
+}
+
+.submit button:hover {
+  transform: translateY(-2px);
+}
+
+.submit button:active {
+  transform: translateY(2px);
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.25);
+}
+
+/* Escape Menu */
+.escMenu {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.esc {
+  background: #555555c6;
+  padding: 45px 40px;
+  border-radius: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  width: 460px;
+}
+
+.settingButton,
+.backToGameButton {
+  font-family: "Press Start 2P", cursive;
+  font-size: 18px;
+  padding: 22px 14px;
+  background: #dcdcdc;
+  color: #3e3e3e;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.2);
+  transition:
+    transform 0.1s ease,
+    box-shadow 0.1s ease;
+}
+
+.settingButton:hover,
+.backToGameButton:hover {
+  transform: translateY(-2px);
+}
+
+.settingButton:active,
+.backToGameButton:active {
+  transform: translateY(2px);
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.2);
+}
+
+.backToMenuButton {
+  font-family: "Press Start 2P", cursive;
+  font-size: 18px;
+  padding: 22px 14px;
+  background: #ff6666;
+  color: #3e3e3e;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.25);
+  transition:
+    transform 0.1s ease,
+    box-shadow 0.1s ease;
+}
+
+.backToMenuButton:hover {
+  transform: translateY(-2px);
+}
+
+.backToMenuButton:active {
+  transform: translateY(2px);
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.25);
+}
