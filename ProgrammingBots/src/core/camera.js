@@ -27,9 +27,28 @@ export const camera = {
 
         canvas.addEventListener("wheel", (event) => {
             event.preventDefault();
+
+            const mouseX = event.clientX;
+            const mouseY = event.clientY;
+
+            // 1. World position BEFORE zoom (in screen-space world coords)
+            const worldBeforeX = (mouseX - this.offsetX) / this.zoom;
+            const worldBeforeY = (mouseY - this.offsetY) / this.zoom;
+
+            // 2. Apply zoom
+            const oldZoom = this.zoom;
             this.zoom *= event.deltaY < 0 ? this.zoomFactor : 1 / this.zoomFactor;
             this.zoom = Math.max(0.5, Math.min(this.zoom, 5));
-            onChange();
+
+            // 3. World position AFTER zoom
+            const worldAfterX = (mouseX - this.offsetX) / this.zoom;
+            const worldAfterY = (mouseY - this.offsetY) / this.zoom;
+
+            // 4. Adjust offset so the world stays under the mouse
+            this.offsetX += (worldAfterX - worldBeforeX) * this.zoom;
+            this.offsetY += (worldAfterY - worldBeforeY) * this.zoom;
+
+            this.onChange();
         });
 
         canvas.addEventListener("mousedown", (event) => {
