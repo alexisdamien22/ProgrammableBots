@@ -28,5 +28,25 @@
     "src": "tiles/acid_ground.png",
     "w": 1,
     "h": 1
+  },
+  "noxalite": {
+    "src": "tiles/noxalite.png",
+    "w": 1,
+    "h": 1
+  },
+  "helionite": {
+    "src": "tiles/helionite.png",
+    "w": 1,
+    "h": 1
+  },
+  "copper": {
+    "src": "tiles/copper.png",
+    "w": 1,
+    "h": 1
+  },
+  "iron": {
+    "src": "tiles/iron.png",
+    "w": 1,
+    "h": 1
   }
 }
