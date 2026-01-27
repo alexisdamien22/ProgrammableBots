@@ -11,17 +11,17 @@ function canPlace(grid, x, y, asset) {
 }
 
 export function placeStructures(grid, count = 20, type) {
-    const house = assets.get(type);
-    if (!house) return;
+    const asset = assets.get(type);
+    if (!asset) return;
 
     for (let i = 0; i < count; i++) {
-        const x = Math.floor(Math.random() * (grid[0].length - house.w));
-        const y = Math.floor(Math.random() * (grid.length - house.h));
+        const x = Math.floor(Math.random() * (grid[0].length - asset.w));
+        const y = Math.floor(Math.random() * (grid.length - asset.h));
 
-        if (!canPlace(grid, x, y, house)) continue;
+        if (!canPlace(grid, x, y, asset)) continue;
 
-        for (let dx = 0; dx < house.w; dx++) {
-            for (let dy = 0; dy < house.h; dy++) {
+        for (let dx = 0; dx < asset.w; dx++) {
+            for (let dy = 0; dy < asset.h; dy++) {
                 addAssetToGrid(grid, {
                     type: type,
                     origin: { x, y },
