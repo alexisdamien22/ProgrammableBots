@@ -3,6 +3,7 @@ import { Chunks } from "./chunks.js";
 export function saveWorld(saveName) {
     const savedChunks = [];
 
+    // Chunks.getAllChunks() returns an iterator
     for (const chunk of Chunks.getAllChunks()) {
         savedChunks.push({
             cx: chunk.cx,
@@ -13,7 +14,7 @@ export function saveWorld(saveName) {
 
     const saveData = {
         timestamp: Date.now(),
-        seed: chunks.seed,
+        seed: Chunks.seed,
         chunks: savedChunks
     };
 
