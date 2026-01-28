@@ -9,3 +9,9 @@ html, body {
 canvas {
   display: block;
 }
+
+.fps {
+  position: absolute;
+  background-color: #555555;
+  opacity: 0.82;
+}
