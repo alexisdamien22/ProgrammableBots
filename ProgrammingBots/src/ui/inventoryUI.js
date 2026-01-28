@@ -24,7 +24,7 @@ export function initInventoryUI(container) {
   });
 }
 
-function renderSlotContent(slotElement, itemData) {
+export function renderSlotContent(slotElement, itemData) {
   slotElement.innerHTML = "";
   if (itemData) {
     const img = document.createElement("img");

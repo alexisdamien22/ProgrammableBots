@@ -28,14 +28,16 @@ export async function init(SEED) {
         type: "spaceShuttle",
         origin: { x: 0, y: 0 },
         localOffset: { dx: 0, dy: 0 }
-    }, 0, 0);
+    }, 8, 8);
     return { ctx, canvas, camera, then, fpsElement };
 }
 
 export const GameState = {
+    currentPage: "GamePage",
     lastChunkX: null,
     lastChunkY: null,
-    needsRedraw: true
+    needsRedraw: true,
+    inventoryOpen: false
 };
 
 
@@ -69,14 +71,3 @@ export function frame(SEED, ctx, canvas, camera, tileSize, then, fpsElement) {
 
     requestAnimationFrame(() => frame(SEED, ctx, canvas, camera, tileSize, then, fpsElement));
 }
-
-window.requestAnimFrame = (function () {
-    return window.requestAnimationFrame ||
-        window.webkitRequestAnimationFrame ||
-        window.mozRequestAnimationFrame ||
-        window.ieRequestAnimationFrame ||
-        function (callback) {
-            window.setTimeout(callback, 1000 / 60);
-        };
-})();
-

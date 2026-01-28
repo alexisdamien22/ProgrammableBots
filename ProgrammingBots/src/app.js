@@ -6,6 +6,9 @@ import { camera } from "./core/camera.js";
 import { init } from "./mainLoop.js";
 import { frame } from "./mainLoop.js";
 import { GameState } from "./mainLoop.js";
+import { initHandTracking } from "./ui/handManager.js";
+import { inventoryState } from "./ui/inventoryManager.js";
+import { renderSlotContent } from "./ui/inventoryUI.js";
 
 //for every page to load
 function loadPage(pageFn) {
@@ -36,6 +39,7 @@ const SaveManager = {
 
 // --- PAGES ---
 function createCreatePage() {
+    GameState.currentPage = "CreatePage";
     const root = document.createElement("section");
     root.classList.add("ceateMenu");
 
@@ -73,9 +77,6 @@ function createCreatePage() {
 
         const seed = seedInput ? Number(seedInput) : Date.now();
 
-  root.querySelector("#createForm").addEventListener("submit", (event) => {
-    event.preventDefault();
-
         createWorld(saveName, seed);
         loadPage(createGamePage);
 
@@ -92,6 +93,7 @@ function createCreatePage() {
 }
 
 function createEscMenu() {
+    GameState.currentPage = "EscMenu";
     const root = document.createElement("section");
     root.classList.add("escMenu");
 
@@ -110,6 +112,7 @@ function createEscMenu() {
 }
 
 function createMainMenu() {
+    GameState.currentPage = "MainMenu";
     const root = document.createElement("section");
     root.classList.add("mainMenu");
 
@@ -143,6 +146,7 @@ function createMainMenu() {
 }
 
 function createSavesPage() {
+    GameState.currentPage = "SavesPage";
     const root = document.createElement("section");
     root.classList.add("savesMenu");
     const saves = SaveManager.loadSaves();
@@ -245,6 +249,7 @@ function createSavesPage() {
 }
 
 function createSettingsPage() {
+    GameState.currentPage = "SettingsPage";
     const root = document.createElement("section");
     root.classList.add("settingMenu");
 
@@ -260,6 +265,7 @@ function createSettingsPage() {
 }
 
 function createGamePage() {
+    GameState.currentPage = "GamePage";
     const root = document.createElement("section");
     root.classList.add("gamePage");
     root.innerHTML = `
@@ -270,68 +276,88 @@ function createGamePage() {
     return root;
 }
 
-// function createInventoryUI() {
-//   const root = document.getElementById("app");
+function createInventoryUI() {
+    const root = document.getElementById("inventory");
 
-//   // 1. On injecte la structure HTML
-//   root.innerHTML = `
-//     <div class="inventory-overlay">
-//       <div class="inventory-panel">
-//         <h2 class="inventory-title">Inventaire</h2>
-//         <div class="inventory-grid" id="inventoryGrid"></div>
-//       </div>
-//       <div id="hand-item"></div>
-//     </div>
-//   `;
+    // Inject HTML
+    root.innerHTML = `
+        <div class="inventory-overlay">
+            <div class="inventory-panel">
+                <h2 class="inventory-title">Inventaire</h2>
+                <div class="inventory-grid" id="inventoryGrid"></div>
+            </div>
+            <div id="hand-item"></div>
+        </div>
+    `;
 
-//   const gridContainer = root.querySelector("#inventoryGrid");
+    const gridContainer = root.querySelector("#inventoryGrid");
 
-//   // 2. Initialisation du suivi de souris (main)
-//   initHandTracking();
+    // Generate slots
+    inventoryState.slots.forEach((item, index) => {
+        const slot = document.createElement("div");
+        slot.classList.add("slot");
+        slot.dataset.index = index;
 
-//   // 3. Génération dynamique des slots
-//   inventoryState.slots.forEach((item, index) => {
-//     const slot = document.createElement("div");
-//     slot.classList.add("slot");
-//     slot.dataset.index = index;
+        renderSlotContent(slot, item);
 
-//     // Affiche l'item s'il y en a un au départ
-//     renderSlotContent(slot, item);
+        slot.addEventListener("click", () => {
+            const { newSlotItem, newHandItem } = swapItemWithHand(index);
+            renderSlotContent(slot, newSlotItem);
+            updateHandVisual(newHandItem);
+        });
 
-//     // Event de clic pour prendre/poser
-//     slot.addEventListener("click", () => {
-//       const { newSlotItem, newHandItem } = swapItemWithHand(index);
+        gridContainer.appendChild(slot);
+    });
 
-//       renderSlotContent(slot, newSlotItem);
-//       updateHandVisual(newHandItem);
-//     });
+    // Close inventory
+    const handleKeyDown = (event) => {
+        if (event.key.toLowerCase() === "e" || event.key === "Escape") {
+            document.removeEventListener("keydown", handleKeyDown);
+            // closeInventory() or return to game
+        }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+}
 
-//     gridContainer.appendChild(slot);
-//   });
+function closeInventoryUI() {
+    const root = document.getElementById("inventory");
+    if (!root) return;
 
-//   // Optionnel : Fermer l'inventaire avec la touche 'E' ou 'Echap'
-//   const handleKeyDown = (e) => {
-//     if (e.key.toLowerCase() === "e" || e.key === "Escape") {
-//       // Logique pour retourner au jeu (ex: loadPage(mainLoop))
-//       document.removeEventListener("keydown", handleKeyDown);
-//     }
-//   };
-//   document.addEventListener("keydown", handleKeyDown);
+    // Remove inventory UI
+    root.innerHTML = "";
 
-//   return root;
-// }
+    // Reset inventory state
+    GameState.inventoryOpen = false;
 
-// const inventoryContainer = document.querySelector(".inventory-grid");
-// initInventory(inventoryContainer);
+    // Hide hand item safely
+    const hand = document.getElementById("hand-item");
+    if (hand) {
+        hand.innerHTML = "";
+        hand.style.display = "none";
+    }
+}
 
-// initHandTracking();
+function toggleInventory() {
+    if (!GameState.inventoryOpen) {
+        createInventoryUI();
+        initHandTracking();
+        GameState.inventoryOpen = true;
+    } else {
+        closeInventoryUI();
+        GameState.inventoryOpen = false;
+    }
+}
 
-// setItemInSlot(0, { id: "ironOre", name: "Iron Ore" });
-// setItemInSlot(1, { id: "copperIngot", name: "Copper Ingot" });
+document.addEventListener("keydown", (event) => {
+    if (GameState.currentPage !== "GamePage") return;
 
-// const gridContainer = document.querySelector(".inventory-grid");
-// if (gridContainer) {
-//   initInventoryUI(gridContainer);
-// }
+    if (event.key.toLowerCase() === "e") {
+        toggleInventory();
+    }
+
+    if (GameState.inventoryOpen && event.key === "Escape") {
+        toggleInventory();
+    }
+});
 
 loadPage(createMainMenu);
