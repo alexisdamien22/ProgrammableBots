@@ -1,5 +1,9 @@
 import { loadWorld } from "./world/loadWorld.js";
 import { saveWorld } from "./world/saveWorld.js";
+// import { initInventoryUI } from "./ui/inventoryUI.js";
+// import { initHandTracking } from "./handManager.js";
+// import { setItemInSlot } from "./inventoryManager.js";
+// import { initInventory } from "./ui/inventoryUI.js";
 
 //for every page to load
 function loadPage(pageFn) {
@@ -257,5 +261,69 @@ function createGamePage() {
   `;
   return root;
 }
+
+// function createInventoryUI() {
+//   const root = document.getElementById("app");
+
+//   // 1. On injecte la structure HTML
+//   root.innerHTML = `
+//     <div class="inventory-overlay">
+//       <div class="inventory-panel">
+//         <h2 class="inventory-title">Inventaire</h2>
+//         <div class="inventory-grid" id="inventoryGrid"></div>
+//       </div>
+//       <div id="hand-item"></div>
+//     </div>
+//   `;
+
+//   const gridContainer = root.querySelector("#inventoryGrid");
+
+//   // 2. Initialisation du suivi de souris (main)
+//   initHandTracking();
+
+//   // 3. Génération dynamique des slots
+//   inventoryState.slots.forEach((item, index) => {
+//     const slot = document.createElement("div");
+//     slot.classList.add("slot");
+//     slot.dataset.index = index;
+
+//     // Affiche l'item s'il y en a un au départ
+//     renderSlotContent(slot, item);
+
+//     // Event de clic pour prendre/poser
+//     slot.addEventListener("click", () => {
+//       const { newSlotItem, newHandItem } = swapItemWithHand(index);
+
+//       renderSlotContent(slot, newSlotItem);
+//       updateHandVisual(newHandItem);
+//     });
+
+//     gridContainer.appendChild(slot);
+//   });
+
+//   // Optionnel : Fermer l'inventaire avec la touche 'E' ou 'Echap'
+//   const handleKeyDown = (e) => {
+//     if (e.key.toLowerCase() === "e" || e.key === "Escape") {
+//       // Logique pour retourner au jeu (ex: loadPage(mainLoop))
+//       document.removeEventListener("keydown", handleKeyDown);
+//     }
+//   };
+//   document.addEventListener("keydown", handleKeyDown);
+
+//   return root;
+// }
+
+// const inventoryContainer = document.querySelector(".inventory-grid");
+// initInventory(inventoryContainer);
+
+// initHandTracking();
+
+// setItemInSlot(0, { id: "ironOre", name: "Iron Ore" });
+// setItemInSlot(1, { id: "copperIngot", name: "Copper Ingot" });
+
+// const gridContainer = document.querySelector(".inventory-grid");
+// if (gridContainer) {
+//   initInventoryUI(gridContainer);
+// }
 
 loadPage(createMainMenu);
