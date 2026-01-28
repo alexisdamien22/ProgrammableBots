@@ -401,6 +401,7 @@ function openEscMenu() {
             await saveWorld(GameState.currentSaveName);
             console.log(`Game saved: ${GameState.currentSaveName}`);
         }
+        closeEscMenu();
         GameState.escMenuOpen = false;
         GameState.currentSaveName = null;
         loadPage(createMainMenu);
