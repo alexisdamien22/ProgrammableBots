@@ -1,21 +1,3 @@
-html{
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background: #222;
-  height: 100%;
-}
-
-canvas {
-  display: block;
-}
-
-.fps {
-  position: absolute;
-  background-color: #555555;
-  opacity: 0.82;
-}
-
 * {
   margin: 0;
   padding: 0;
@@ -31,7 +13,7 @@ body {
   height: 100vh;
   width: 100vw;
   font-family: "Press Start 2P", cursive;
-  background-image: url(assets/ui/background.png);
+  background-image: url(../assets/ui/background.png);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -175,13 +157,13 @@ body {
   border: 4px solid transparent;
 }
 
-/*.saveCard:first-child {
+.saveCardActive {
   border: 4px solid #ff3b3b;
 }
 
-.saveCard p:first-child {
+.saveCardActive p {
   font-size: 20px;
-}*/
+}
 
 .custom {
   display: flex;
@@ -461,4 +443,42 @@ form p {
 .backToMenuButton:active {
   transform: translateY(2px);
   box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.25);
+}
+
+canvas {
+  display: block;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: #222;
+  height: 100%;
+}
+
+.fps {
+  position: absolute;
+  background-color: #555555;
+  opacity: 0.82;
+}
+
+@media (max-width: 600px) {
+  .logo {
+    height: 150px;
+  }
+
+  .menu {
+    padding: 25px 20px;
+    width: 100%;
+  }
+
+  .saveCard {
+    padding: 14px 16px;
+  }
+
+  .custom {
+    flex-direction: column;
+  }
+
+  .submit {
+    flex-direction: column;
+  }
 }

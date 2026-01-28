@@ -94,7 +94,7 @@ function createMainMenu() {
 
     root.innerHTML = `
     <section class="mainMenu">
-      <img src="assets/ui/title.png" alt="logo" class="logo" />
+      <img src="assets/ui/logo.png" alt="logo" class="logo" />
       <div class="menu">
         <button id="soloButton" class="greyButton">Solo</button>
         <button id="multiButton" class="greyButton">Multijoueur</button>
@@ -148,7 +148,13 @@ function createSavesPage() {
   `;
 
     const container = root.querySelector(".saves");
+    const custom = root.querySelector(".custom");
 
+    const suppBtn = root.querySelector(".suppButton");
+    const modifBtn = root.querySelector(".modifButton");
+    const playBtn = root.querySelector(".playButton");
+
+    // --- Génération dynamique des saves ---
     saves.forEach((save, index) => {
         const card = document.createElement("div");
         card.className = "saveCard";
@@ -159,24 +165,41 @@ function createSavesPage() {
       <p>Dernière partie : ${save.lastPlayed}</p>
     `;
 
+        // --- Event Listener : sélection d'une save ---
         card.addEventListener("click", () => {
-            document.querySelectorAll(".saveCard").forEach(c => c.classList.remove("selected"));
-            card.classList.add("selected");
+            // Retirer l'ancienne sélection
+            root.querySelectorAll(".saveCard").forEach(c => {
+                c.classList.remove("saveCardActive");
+            });
+
+            // Ajouter la nouvelle sélection
+            card.classList.add("saveCardActive");
+
+            // Activer les boutons
+            suppBtn.classList.add("suppButtonActive");
+            modifBtn.classList.add("modifButtonActive");
+            playBtn.classList.add("playButtonActive");
+
+            // Activer les effets hover/active
+            custom.classList.add("customActive");
         });
 
         container.appendChild(card);
     });
 
+    // --- Bouton Créer ---
     root.querySelector(".createButton").addEventListener("click", () => {
         loadPage(createCreatePage);
     });
 
+    // --- Bouton Retour ---
     root.querySelector(".backButton").addEventListener("click", () => {
         loadPage(createMainMenu);
     });
 
-    root.querySelector(".suppButton").addEventListener("click", () => {
-        const selected = root.querySelector(".saveCard.selected");
+    // --- Bouton Supprimer ---
+    suppBtn.addEventListener("click", () => {
+        const selected = root.querySelector(".saveCardActive");
         if (!selected) return alert("Sélectionne une sauvegarde");
 
         const index = selected.dataset.index;
@@ -187,15 +210,17 @@ function createSavesPage() {
         loadPage(createSavesPage);
     });
 
-    root.querySelector(".modifButton").addEventListener("click", () => {
+    // --- Bouton Modifier ---
+    modifBtn.addEventListener("click", () => {
         alert("La modification n'est pas encore implémentée");
     });
 
-    root.querySelector(".playButton").addEventListener("click", () => {
-        const selected = root.querySelector(".saveCard.selected");
-        if (!selected) return alert("Sélectionne une sauvegarde");
-
-        alert("Chargement de la partie...");
+    // --- Bouton Jouer ---
+    playBtn.addEventListener("click", () => {
+        const selected = root.querySelector(".saveCardActive");
+        if (selected) {
+            alert("Chargement de la partie...");
+        }
     });
 
     return root;
