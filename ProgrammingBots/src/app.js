@@ -271,7 +271,7 @@ function createSavesPage() {
             try {
                 await SaveManager.updateLastPlayed(saveName);
                 GameState.currentSaveName = saveName;
-                loadWorld(saveName);
+                loadWorld(saveName, saveData);
                 loadPage(createGamePage);
 
                 const { ctx, canvas, camera, then, fpsElement } = await init(saveData.seed);

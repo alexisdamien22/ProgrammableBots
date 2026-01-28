@@ -3,14 +3,11 @@ import { createGrid } from "../core/grid.js";
 import { CHUNK_SIZE } from "./worldVars.js";
 import { inventoryState, setItemInSlot } from "../ui/inventoryManager.js";
 
-export function loadWorld(saveName) {
-    const json = localStorage.getItem(`saves:${saveName}`);
-    if (!json) {
-        console.warn("Save not found:", saveName);
+export function loadWorld(saveName, saveData) {
+    if (!saveData) {
+        console.warn("Save data not provided");
         return null;
     }
-
-    const saveData = JSON.parse(json);
 
     // Reset chunk map (replacement for clearAll)
     Chunks.chunks = new Map();
