@@ -52,7 +52,8 @@ export const GameState = {
     lastChunkY: null,
     needsRedraw: true,
     inventoryOpen: false,
-    escMenuOpen: false
+    escMenuOpen: false,
+    currentSaveName: null
 };
 
 

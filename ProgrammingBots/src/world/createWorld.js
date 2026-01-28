@@ -2,8 +2,9 @@ import { Chunks } from "./chunks.js";
 import { saveWorld } from "./saveWorld.js";
 import { loadWorld } from "./loadWorld.js";
 import { generateChunk } from "../procedural/generateChunk.js";
+import { initDatabase } from "./saveDatabase.js";
 
-export function createWorld(saveName, seed) {
+export async function createWorld(saveName, seed) {
     // 1. Reset chunks map
     Chunks.chunks = new Map();
 
@@ -20,11 +21,9 @@ export function createWorld(saveName, seed) {
         }
     }
 
-    // 4. Save world
-    saveWorld(saveName);
-
-    // 5. Load world into engine
-    loadWorld(saveName);
+    // 4. Save initial world state to IndexedDB
+    await initDatabase();
+    await saveWorld(saveName);
 
     console.log(`World "${saveName}" created with seed ${seed}`);
 }

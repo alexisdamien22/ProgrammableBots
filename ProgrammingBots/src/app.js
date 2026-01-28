@@ -9,6 +9,7 @@ import { GameState } from "./mainLoop.js";
 import { initHandTracking } from "./ui/handManager.js";
 import { inventoryState } from "./ui/inventoryManager.js";
 import { renderSlotContent } from "./ui/inventoryUI.js";
+import { initDatabase, saveGameToDB, loadGameFromDB, listAllSaves, deleteGameFromDB } from "./world/saveDatabase.js";
 
 //for every page to load
 function loadPage(pageFn) {
@@ -18,22 +19,48 @@ function loadPage(pageFn) {
 }
 
 const SaveManager = {
-    loadSaves() {
-        return JSON.parse(localStorage.getItem("saves") || "[]");
+    async loadSaves() {
+        return await listAllSaves();
     },
 
-    saveAll(saves) {
-        localStorage.setItem("saves", JSON.stringify(saves));
+    async addSave(name, seed) {
+        const saveData = JSON.parse(localStorage.getItem(`saves:${name}`));
+        if (saveData) {
+            await saveGameToDB(name, saveData);
+            localStorage.removeItem(`saves:${name}`);
+        }
     },
 
-    addSave(name, seed) {
-        const saves = this.loadSaves();
-        saves.push({
-            name,
-            seed,
-            lastPlayed: new Date().toLocaleDateString("fr-FR")
-        });
-        this.saveAll(saves);
+    async removeSave(name) {
+        await deleteGameFromDB(name);
+    },
+
+    async updateLastPlayed(name) {
+        const saveData = await loadGameFromDB(name);
+        if (saveData) {
+            saveData.lastPlayed = new Date().toLocaleDateString("fr-FR");
+            await saveGameToDB(name, saveData);
+        }
+    },
+
+    async getSave(name) {
+        const key = `saves:${name}`;
+        console.log("Looking for save with key:", key);
+        
+        // First try IndexedDB
+        const dbData = await loadGameFromDB(name);
+        if (dbData) {
+            console.log("Save found in IndexedDB");
+            return dbData;
+        }
+        
+        // Fall back to localStorage (for migration)
+        const data = localStorage.getItem(key);
+        console.log("Raw data from localStorage:", data ? "exists" : "not found");
+        if (data) {
+            return JSON.parse(data);
+        }
+        return null;
     }
 };
 
@@ -77,7 +104,9 @@ function createCreatePage() {
 
         const seed = seedInput ? Number(seedInput) : Date.now();
 
-        createWorld(saveName, seed);
+        // Create world (saves to IndexedDB)
+        await createWorld(saveName, seed);
+        GameState.currentSaveName = saveName;
         loadPage(createGamePage);
 
         const { ctx, canvas, camera, then, fpsElement } = await init(seed);
@@ -130,7 +159,6 @@ function createSavesPage() {
     GameState.currentPage = "SavesPage";
     const root = document.createElement("section");
     root.classList.add("savesMenu");
-    const saves = SaveManager.loadSaves();
 
     root.innerHTML = `
       <div class="head">
@@ -157,73 +185,107 @@ function createSavesPage() {
     const modifBtn = root.querySelector(".modifButton");
     const playBtn = root.querySelector(".playButton");
 
-    // --- Génération dynamique des saves ---
-    saves.forEach((save, index) => {
-        const card = document.createElement("div");
-        card.className = "saveCard";
-        card.dataset.index = index;
+    // Load saves asynchronously
+    SaveManager.loadSaves().then(saves => {
+        // --- Génération dynamique des saves ---
+        saves.forEach((save, index) => {
+            const card = document.createElement("div");
+            card.className = "saveCard";
+            card.dataset.index = index;
 
-        card.innerHTML = `
-      <p>${save.name}</p>
-      <p class="saveLastPlayed">Dernière partie : ${save.lastPlayed}</p>
-    `;
+            card.innerHTML = `
+        <p>${save.name}</p>
+        <p class="saveLastPlayed">Dernière partie : ${save.lastPlayed}</p>
+      `;
 
-        // --- Event Listener : sélection d'une save ---
-        card.addEventListener("click", () => {
-            // Retirer l'ancienne sélection
-            root.querySelectorAll(".saveCard").forEach(c => {
-                c.classList.remove("saveCardActive");
+            // --- Event Listener : sélection d'une save ---
+            card.addEventListener("click", () => {
+                // Retirer l'ancienne sélection
+                root.querySelectorAll(".saveCard").forEach(c => {
+                    c.classList.remove("saveCardActive");
+                });
+
+                // Ajouter la nouvelle sélection
+                card.classList.add("saveCardActive");
+
+                // Activer les boutons
+                suppBtn.classList.add("suppButtonActive");
+                modifBtn.classList.add("modifButtonActive");
+                playBtn.classList.add("playButtonActive");
+
+                // Activer les effets hover/active
+                custom.classList.add("customActive");
             });
 
-            // Ajouter la nouvelle sélection
-            card.classList.add("saveCardActive");
-
-            // Activer les boutons
-            suppBtn.classList.add("suppButtonActive");
-            modifBtn.classList.add("modifButtonActive");
-            playBtn.classList.add("playButtonActive");
-
-            // Activer les effets hover/active
-            custom.classList.add("customActive");
+            container.appendChild(card);
         });
 
-        container.appendChild(card);
-    });
+        // --- Bouton Créer ---
+        root.querySelector(".createButton").addEventListener("click", () => {
+            loadPage(createCreatePage);
+        });
 
-    // --- Bouton Créer ---
-    root.querySelector(".createButton").addEventListener("click", () => {
-        loadPage(createCreatePage);
-    });
+        // --- Bouton Retour ---
+        root.querySelector(".backButton").addEventListener("click", () => {
+            loadPage(createMainMenu);
+        });
 
-    // --- Bouton Retour ---
-    root.querySelector(".backButton").addEventListener("click", () => {
-        loadPage(createMainMenu);
-    });
+        // --- Bouton Supprimer ---
+        suppBtn.addEventListener("click", async () => {
+            const selected = root.querySelector(".saveCardActive");
+            if (selected) {
+                const saveName = saves[selected.dataset.index].name;
+                if (confirm(`Êtes-vous sûr de vouloir supprimer "${saveName}" ?`)) {
+                    await SaveManager.removeSave(saveName);
+                    loadPage(createSavesPage);
+                }
+            }
+        });
 
-    // --- Bouton Supprimer ---
-    suppBtn.addEventListener("click", () => {
-        const selected = root.querySelector(".saveCardActive");
-        if (selected) {
-            const index = selected.dataset.index;
-            const saves = SaveManager.loadSaves();
-            saves.splice(index, 1);
-            SaveManager.saveAll(saves);
+        // --- Bouton Modifier ---
+        modifBtn.addEventListener("click", () => {
+            alert("La modification n'est pas encore implémentée");
+        });
 
-            loadPage(createSavesPage);
-        }
-    });
+        // --- Bouton Jouer ---
+        playBtn.addEventListener("click", async () => {
+            const selected = root.querySelector(".saveCardActive");
+            console.log("Play button clicked, selected:", selected);
+            
+            if (!selected) {
+                alert("Veuillez sélectionner une sauvegarde");
+                return;
+            }
+            
+            const saveName = saves[selected.dataset.index].name;
+            console.log("Save name:", saveName);
+            
+            const saveData = await SaveManager.getSave(saveName);
+            console.log("Save data:", saveData);
+            
+            if (!saveData) {
+                alert("Impossible de charger la sauvegarde");
+                return;
+            }
+            
+            try {
+                await SaveManager.updateLastPlayed(saveName);
+                GameState.currentSaveName = saveName;
+                loadWorld(saveName);
+                loadPage(createGamePage);
 
-    // --- Bouton Modifier ---
-    modifBtn.addEventListener("click", () => {
-        alert("La modification n'est pas encore implémentée");
-    });
+                const { ctx, canvas, camera, then, fpsElement } = await init(saveData.seed);
 
-    // --- Bouton Jouer ---
-    playBtn.addEventListener("click", () => {
-        const selected = root.querySelector(".saveCardActive");
-        if (selected) {
-            alert("Chargement de la partie...");
-        }
+                camera.init(canvas, () => {
+                    GameState.needsRedraw = true;
+                });
+
+                frame(saveData.seed, ctx, canvas, camera, tileSize, then, fpsElement);
+            } catch (err) {
+                console.error("Error loading game:", err);
+                alert("Erreur lors du chargement du jeu: " + err.message);
+            }
+        });
     });
 
     return root;
@@ -334,9 +396,14 @@ function openEscMenu() {
         alert("Les paramètres avancés ne sont pas encore disponibles");
     });
 
-    root.querySelector("#backToMenuButton").addEventListener("click",() => {
+    root.querySelector("#backToMenuButton").addEventListener("click", async () => {
+        if (GameState.currentSaveName) {
+            await saveWorld(GameState.currentSaveName);
+            console.log(`Game saved: ${GameState.currentSaveName}`);
+        }
         GameState.escMenuOpen = false;
-        alert("Le système de sauvegardes est en cours de développement...");
+        GameState.currentSaveName = null;
+        loadPage(createMainMenu);
     });
 
 
