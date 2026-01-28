@@ -1,5 +1,5 @@
-import { loadWorld } from "./world/loadWorld.js";
-import { saveWorld } from "./world/saveWorld.js";
+//import { loadWorld } from "./world/loadWorld.js";
+//import { saveWorld } from "./world/saveWorld.js";
 
 //for every page to load
 function loadPage(pageFn) {
@@ -30,10 +30,10 @@ const SaveManager = {
 
 // --- PAGES ---
 function createCreatePage() {
-  const root = document.createElement("div");
+  const root = document.createElement("section");
+  root.classList.add("ceateMenu");
 
   root.innerHTML = `
-    <section class="ceateMenu">
       <p>Création</p>
       <div class="createParam">
         <form id="createForm">
@@ -49,7 +49,6 @@ function createCreatePage() {
           </div>
         </form>
       </div>
-    </section>
   `;
 
   root.querySelector(".cancelButton").addEventListener("click", () => {
@@ -76,9 +75,10 @@ function createCreatePage() {
 }
 
 function createEscMenu() {
-  const root = document.getElementById("app");
+  const root = document.createElement("section");
+  root.classList.add("escMenu");
+
   root.innerHTML = `
-    <section class="escMenu">
       <div class="esc">
         <button id="backToGameButton" class="greyButton">Retour au Jeu</button>
         <button id="settingButton" class="greyButton">
@@ -88,16 +88,15 @@ function createEscMenu() {
           <a href="index.html">Retourner au menu et sauvegarder</a>
         </button>
       </div>
-    </section>
   `;
   return root;
 }
 
 function createMainMenu() {
-  const root = document.getElementById("app");
+  const root = document.createElement("section");
+  root.classList.add("mainMenu");
 
   root.innerHTML = `
-    <section class="mainMenu">
       <img src="assets/ui/logo.png" alt="logo" class="logo" />
       <div class="menu">
         <button id="soloButton" class="greyButton">Solo</button>
@@ -105,7 +104,6 @@ function createMainMenu() {
         <button id="settingButton" class="greyButton">Paramètres</button>
         <button id="quitButton" class="quitButton">Quitter</button>
       </div>
-    </section>
   `;
 
   root.querySelector("#soloButton").addEventListener("click", () => {
@@ -128,11 +126,11 @@ function createMainMenu() {
 }
 
 function createSavesPage() {
-  const root = document.getElementById("app");
+  const root = document.createElement("section");
+  root.classList.add("savesMenu");
   const saves = SaveManager.loadSaves();
 
   root.innerHTML = `
-    <section class="savesMenu">
       <div class="head">
         <p>Sauvegardes</p>
         <div class="headButtons">
@@ -148,7 +146,6 @@ function createSavesPage() {
         <button class="modifButton">Modifier</button>
         <button class="playButton">Jouer</button>
       </div>
-    </section>
   `;
 
   const container = root.querySelector(".saves");
@@ -231,12 +228,11 @@ function createSavesPage() {
 }
 
 function createSettingsPage() {
-  const root = document.getElementById("app");
+  const root = document.createElement("section");
+  root.classList.add("settingMenu");
 
   root.innerHTML = `
-    <section class="settingMenu">
       <button class="backButton">Retour</button>
-    </section>
   `;
 
   root.querySelector(".backButton").addEventListener("click", () => {
@@ -247,13 +243,12 @@ function createSettingsPage() {
 }
 
 function createGamePage() {
-  const root = document.getElementById("app");
+  const root = document.createElement("section");
+  root.classList.add("gamePage");
   root.innerHTML = `
-    <section class="gamePage">
         <div class="fps">fps: <span id="fps"></span></div>
         <canvas id="grid" width="window.innerWidth" height="window.innerHeight"></canvas>
         <script type="module" src="/src/main.js"></script>
-    </section>
   `;
   return root;
 }
