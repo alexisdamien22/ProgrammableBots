@@ -13,6 +13,7 @@ export function saveWorld(saveName) {
 
     const saveData = {
         timestamp: Date.now(),
+        seed: chunks.seed,
         chunks: savedChunks
     };
 
