@@ -200,14 +200,14 @@ function createSavesPage() {
     // --- Bouton Supprimer ---
     suppBtn.addEventListener("click", () => {
         const selected = root.querySelector(".saveCardActive");
-        if (!selected) return alert("Sélectionne une sauvegarde");
+        if (selected) {
+            const index = selected.dataset.index;
+            const saves = SaveManager.loadSaves();
+            saves.splice(index, 1);
+            SaveManager.saveAll(saves);
 
-        const index = selected.dataset.index;
-        const saves = SaveManager.loadSaves();
-        saves.splice(index, 1);
-        SaveManager.saveAll(saves);
-
-        loadPage(createSavesPage);
+            loadPage(createSavesPage);
+        }
     });
 
     // --- Bouton Modifier ---
