@@ -18,10 +18,6 @@ body {
   width: 100vw;
   font-family: "Press Start 2P", cursive;
   background-image: url(../assets/ui/background.png);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
 }
 
 /* Main Menu */
@@ -158,15 +154,16 @@ body {
   gap: 8px;
   cursor: pointer;
   color: #333;
-  border: 4px solid transparent;
+  font-size: 22px;
 }
 
 .saveCardActive {
   border: 4px solid #ff3b3b;
+  padding: 14px 18px;
 }
 
-.saveCardActive p {
-  font-size: 20px;
+.saveLastPlayed {
+  font-size: 14px;
 }
 
 .custom {
@@ -456,6 +453,52 @@ form p {
   justify-content: center;
 }
 
+.inventory-panel {
+  background-color: #555555b9;
+  padding: 2vw;
+  border-radius: 15px;
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.434);
+  width: 90vw;
+  max-width: 800px;
+}
+
+.inventory-title {
+  color: white;
+  margin-top: 0;
+  margin-bottom: 15px;
+  text-shadow: 2px 2px #000;
+  font-size: 1.5rem;
+}
+
+.inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 1vw;
+}
+
+.slot {
+  aspect-ratio: 1 / 1;
+  background-color: #dcdcdc7a;
+  border: 0.5vw solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.item {
+  width: 80%;
+  height: 80%;
+  pointer-events: none;
+}
+
+#hand-item {
+  position: fixed;
+  width: 60px;
+  height: 60px;
+  pointer-events: none;
+  z-index: 1000;
+  display: none;
 
 .fps {
   position: absolute;
