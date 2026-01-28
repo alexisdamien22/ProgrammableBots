@@ -467,7 +467,12 @@ form p {
     z-index: 1000;
     pointer-events: none; /* clicks pass through */
 }
+
 #GameMenus .inventory-panel {
+    pointer-events: auto; /* only the panel is clickable */
+}
+
+#GameMenus .esc {
     pointer-events: auto; /* only the panel is clickable */
 }
 

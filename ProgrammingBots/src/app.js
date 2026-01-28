@@ -92,25 +92,6 @@ function createCreatePage() {
     return root;
 }
 
-function createEscMenu() {
-    GameState.currentPage = "EscMenu";
-    const root = document.createElement("section");
-    root.classList.add("escMenu");
-
-    root.innerHTML = `
-      <div class="esc">
-        <button id="backToGameButton" class="greyButton">Retour au Jeu</button>
-        <button id="settingButton" class="greyButton">
-          <a href="settings.html">Paramètres</a>
-        </button>
-        <button id="backToMenuButton" class="backToMenuButton">
-          <a href="index.html">Retourner au menu et sauvegarder</a>
-        </button>
-      </div>
-  `;
-    return root;
-}
-
 function createMainMenu() {
     GameState.currentPage = "MainMenu";
     const root = document.createElement("section");
@@ -336,23 +317,35 @@ function openEscMenu() {
     root.innerHTML = `
       <div class="esc">
         <button id="backToGameButton" class="greyButton">Retour au Jeu</button>
-        <button id="settingButton" class="greyButton">
-          <a href="settings.html">Paramètres</a>
-        </button>
-        <button id="backToMenuButton" class="backToMenuButton">
-          <a href="index.html">Retourner au menu et sauvegarder</a>
-        </button>
+        <button id="settingButton" class="greyButton">Paramètres</button>
+        <button id="backToMenuButton" class="backToMenuButton">Retourner au menu et sauvegarder</button>
       </div>
     `;
 
     console.log("Esc menu opened");
 
     // Button event
-    root.querySelector("#backToGameButton").addEventListener("click", closeEscMenu);
+    root.querySelector("#backToGameButton").addEventListener("click",() => {
+        GameState.escMenuOpen = false;
+        closeEscMenu();
+    });
+
+    root.querySelector("#settingButton").addEventListener("click",() => {
+        alert("Les paramètres avancés ne sont pas encore disponibles");
+    });
+
+    root.querySelector("#backToMenuButton").addEventListener("click",() => {
+        GameState.escMenuOpen = false;
+        alert("Le système de sauvegardes est en cours de développement...");
+    });
+
 
     // Optional: click outside panel closes menu
     root.addEventListener("click", (event) => {
-        if (event.target.id === "GameMenus") closeEscMenu();
+        if (event.target.id === "GameMenus") {
+            GameState.escMenuOpen = false;
+            closeEscMenu();
+        }
     });
 }
 
