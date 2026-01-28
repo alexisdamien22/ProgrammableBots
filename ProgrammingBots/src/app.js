@@ -22,10 +22,10 @@ const SaveManager = {
     saves.push({
       name,
       seed,
-      lastPlayed: new Date().toLocaleDateString("fr-FR")
+      lastPlayed: new Date().toLocaleDateString("fr-FR"),
     });
     this.saveAll(saves);
-  }
+  },
 };
 
 // --- PAGES ---
@@ -60,7 +60,7 @@ function createCreatePage() {
     alert("Les paramètres avancés ne sont pas encore disponibles");
   });
 
-  root.querySelector("#createForm").addEventListener("submit", e => {
+  root.querySelector("#createForm").addEventListener("submit", (e) => {
     e.preventDefault();
 
     const name = root.querySelector("#saveName").value;
@@ -166,13 +166,13 @@ function createSavesPage() {
 
     card.innerHTML = `
       <p>${save.name}</p>
-      <p>Dernière partie : ${save.lastPlayed}</p>
+      <p class="saveLastPlayed">Dernière partie : ${save.lastPlayed}</p>
     `;
 
     // --- Event Listener : sélection d'une save ---
     card.addEventListener("click", () => {
       // Retirer l'ancienne sélection
-      root.querySelectorAll(".saveCard").forEach(c => {
+      root.querySelectorAll(".saveCard").forEach((c) => {
         c.classList.remove("saveCardActive");
       });
 
