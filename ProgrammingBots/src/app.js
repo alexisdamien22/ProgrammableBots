@@ -1,9 +1,11 @@
 //import { loadWorld } from "./world/loadWorld.js";
 //import { saveWorld } from "./world/saveWorld.js";
 import { createWorld } from "./world/createWorld.js";
+import { tileSize } from "./world/worldVars.js"
 import { camera } from "./core/camera.js";
 import { init } from "./mainLoop.js";
 import { frame } from "./mainLoop.js";
+import { GameState } from "./mainLoop.js";
 
 //for every page to load
 function loadPage(pageFn) {
@@ -63,7 +65,7 @@ function createCreatePage() {
         alert("Les paramètres avancés ne sont pas encore disponibles");
     });
 
-    root.querySelector("#createForm").addEventListener("submit", event => {
+    root.querySelector("#createForm").addEventListener("submit", async event => {
         event.preventDefault();
 
         const saveName = document.querySelector("#saveName").value;
@@ -77,14 +79,15 @@ function createCreatePage() {
         }
 
         createWorld(saveName, seed);
-        //loadPage(createGamePage);
-        //const { ctx, canvas, camera } = init(seed);
+        loadPage(createGamePage);
 
-        //camera.init(canvas, () => {
-        //    needsRedraw = true;
-        //});
+        const { ctx, canvas, camera, then, fpsElement } = await init(seed);
 
-        //frame(seed, ctx, canvas, camera);
+        camera.init(canvas, () => {
+            GameState.needsRedraw = true;
+        });
+
+        frame(seed, ctx, canvas, camera, tileSize, then, fpsElement);
     });
 
     return root;

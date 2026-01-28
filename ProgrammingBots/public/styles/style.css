@@ -455,3 +455,10 @@ form p {
   align-items: center;
   justify-content: center;
 }
+
+
+.fps {
+  position: absolute;
+  background-color: #555555;
+  opacity: 0.82;
+}

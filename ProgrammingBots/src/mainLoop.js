@@ -15,6 +15,10 @@ export async function init(SEED) {
 
     const tileSize = 20;
 
+    let fpsElement = document.getElementById("fps");
+
+    let then = Date.now() / 1000;
+
     await loadAssets();
 
     camera.updateWorldPosition(tileSize, canvas);
@@ -25,25 +29,54 @@ export async function init(SEED) {
         origin: { x: 0, y: 0 },
         localOffset: { dx: 0, dy: 0 }
     }, 0, 0);
-    return { ctx, canvas, camera };
+    return { ctx, canvas, camera, then, fpsElement };
 }
-export function frame(SEED, ctx, canvas, camera) {
+
+export const GameState = {
+    lastChunkX: null,
+    lastChunkY: null,
+    needsRedraw: true
+};
+
+
+export function frame(SEED, ctx, canvas, camera, tileSize, then, fpsElement) {
+    let now = Date.now() / 1000;  // get time in seconds
+
+    // compute time since last frame
+    let elapsedTime = now - then;
+    then = now;
+
+    // compute fps
+    let fps = 1 / elapsedTime;
+    fpsElement.innerText = fps.toFixed(2);
+
     camera.updateWorldPosition(tileSize, canvas);
 
     const cx = Math.floor(camera.worldX / CHUNK_SIZE);
     const cy = Math.floor(camera.worldY / CHUNK_SIZE);
 
-    if (cx !== lastChunkX || cy !== lastChunkY) {
+    if (cx !== GameState.lastChunkX || cy !== GameState.lastChunkY) {
         updateChunks(camera, SEED, 5);
-        lastChunkX = cx;
-        lastChunkY = cy;
+        GameState.lastChunkX = cx;
+        GameState.lastChunkY = cy;
     }
 
-    if (needsRedraw) {
+    if (GameState.needsRedraw) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         drawWorld(ctx, tileSize, camera);
-        needsRedraw = false;
+        GameState.needsRedraw = false;
     }
 
-    requestAnimationFrame(frame);
+    requestAnimationFrame(() => frame(SEED, ctx, canvas, camera, tileSize, then, fpsElement));
 }
+
+window.requestAnimFrame = (function () {
+    return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.ieRequestAnimationFrame ||
+        function (callback) {
+            window.setTimeout(callback, 1000 / 60);
+        };
+})();
+
