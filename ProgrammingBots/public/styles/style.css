@@ -454,7 +454,7 @@ form p {
     pointer-events: auto;
 }
 
-#inventory {
+#GameMenus {
     position: fixed;
     top: 0;
     left: 0;
@@ -467,7 +467,7 @@ form p {
     z-index: 1000;
     pointer-events: none; /* clicks pass through */
 }
-#inventory .inventory-panel {
+#GameMenus .inventory-panel {
     pointer-events: auto; /* only the panel is clickable */
 }
 

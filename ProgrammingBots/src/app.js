@@ -277,7 +277,7 @@ function createGamePage() {
 }
 
 function createInventoryUI() {
-    const root = document.getElementById("inventory");
+    const root = document.getElementById("GameMenus");
 
     // Inject HTML
     root.innerHTML = `
@@ -308,19 +308,10 @@ function createInventoryUI() {
 
         gridContainer.appendChild(slot);
     });
-
-    // Close inventory
-    const handleKeyDown = (event) => {
-        if (event.key.toLowerCase() === "e" || event.key === "Escape") {
-            document.removeEventListener("keydown", handleKeyDown);
-            // closeInventory() or return to game
-        }
-    };
-    document.addEventListener("keydown", handleKeyDown);
 }
 
 function closeInventoryUI() {
-    const root = document.getElementById("inventory");
+    const root = document.getElementById("GameMenus");
     if (!root) return;
 
     // Remove inventory UI
@@ -337,6 +328,42 @@ function closeInventoryUI() {
     }
 }
 
+function openEscMenu() {
+    const root = document.getElementById("GameMenus");
+    if (!root) return;
+
+    // Inject HTML
+    root.innerHTML = `
+      <div class="esc">
+        <button id="backToGameButton" class="greyButton">Retour au Jeu</button>
+        <button id="settingButton" class="greyButton">
+          <a href="settings.html">Paramètres</a>
+        </button>
+        <button id="backToMenuButton" class="backToMenuButton">
+          <a href="index.html">Retourner au menu et sauvegarder</a>
+        </button>
+      </div>
+    `;
+
+    console.log("Esc menu opened");
+
+    // Button event
+    root.querySelector("#backToGameButton").addEventListener("click", closeEscMenu);
+
+    // Optional: click outside panel closes menu
+    root.addEventListener("click", (event) => {
+        if (event.target.id === "GameMenus") closeEscMenu();
+    });
+}
+
+function closeEscMenu() {
+    const root = document.getElementById("GameMenus");
+    if (!root) return;
+
+    // Clear HTML
+    root.innerHTML = "";
+}
+
 function toggleInventory() {
     if (!GameState.inventoryOpen) {
         createInventoryUI();
@@ -348,15 +375,27 @@ function toggleInventory() {
     }
 }
 
+function toggleEscMenu() {
+    if (!GameState.escMenuOpen) {
+        openEscMenu();
+        GameState.escMenuOpen = true;
+    } else {
+        closeEscMenu();
+        GameState.escMenuOpen = false;
+    }
+}
+
 document.addEventListener("keydown", (event) => {
     if (GameState.currentPage !== "GamePage") return;
 
     if (event.key.toLowerCase() === "e") {
         toggleInventory();
+        return;
     }
 
-    if (GameState.inventoryOpen && event.key === "Escape") {
-        toggleInventory();
+    if (event.key === "Escape") {
+        if (GameState.inventoryOpen) toggleInventory();
+        else toggleEscMenu();
     }
 });
 
