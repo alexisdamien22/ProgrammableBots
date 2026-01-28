@@ -1,43 +1,45 @@
 import { loadWorld } from "./world/loadWorld.js";
 import { saveWorld } from "./world/saveWorld.js";
-// import { initInventoryUI } from "./ui/inventoryUI.js";
-// import { initHandTracking } from "./handManager.js";
-// import { setItemInSlot } from "./inventoryManager.js";
-// import { initInventory } from "./ui/inventoryUI.js";
+import { createWorld } from "./world/createWorld.js";
+import { tileSize } from "./world/worldVars.js"
+import { camera } from "./core/camera.js";
+import { init } from "./mainLoop.js";
+import { frame } from "./mainLoop.js";
+import { GameState } from "./mainLoop.js";
 
 //for every page to load
 function loadPage(pageFn) {
-  const app = document.getElementById("app");
-  app.innerHTML = "";
-  app.appendChild(pageFn());
+    const app = document.getElementById("app");
+    app.innerHTML = "";
+    app.appendChild(pageFn());
 }
 
 const SaveManager = {
-  loadSaves() {
-    return JSON.parse(localStorage.getItem("saves") || "[]");
-  },
+    loadSaves() {
+        return JSON.parse(localStorage.getItem("saves") || "[]");
+    },
 
-  saveAll(saves) {
-    localStorage.setItem("saves", JSON.stringify(saves));
-  },
+    saveAll(saves) {
+        localStorage.setItem("saves", JSON.stringify(saves));
+    },
 
-  addSave(name, seed) {
-    const saves = this.loadSaves();
-    saves.push({
-      name,
-      seed,
-      lastPlayed: new Date().toLocaleDateString("fr-FR"),
-    });
-    this.saveAll(saves);
-  },
+    addSave(name, seed) {
+        const saves = this.loadSaves();
+        saves.push({
+            name,
+            seed,
+            lastPlayed: new Date().toLocaleDateString("fr-FR")
+        });
+        this.saveAll(saves);
+    }
 };
 
 // --- PAGES ---
 function createCreatePage() {
-  const root = document.createElement("div");
+    const root = document.createElement("section");
+    root.classList.add("ceateMenu");
 
-  root.innerHTML = `
-    <section class="ceateMenu">
+    root.innerHTML = `
       <p>Création</p>
       <div class="createParam">
         <form id="createForm">
@@ -53,36 +55,47 @@ function createCreatePage() {
           </div>
         </form>
       </div>
-    </section>
   `;
 
-  root.querySelector(".cancelButton").addEventListener("click", () => {
-    loadPage(createSavesPage);
-  });
+    root.querySelector(".cancelButton").addEventListener("click", () => {
+        loadPage(createSavesPage);
+    });
 
-  root.querySelector(".genSettings").addEventListener("click", () => {
-    alert("Les paramètres avancés ne sont pas encore disponibles");
-  });
+    root.querySelector(".genSettings").addEventListener("click", () => {
+        alert("Les paramètres avancés ne sont pas encore disponibles");
+    });
 
-  root.querySelector("#createForm").addEventListener("submit", (e) => {
-    e.preventDefault();
+    root.querySelector("#createForm").addEventListener("submit", async event => {
+        event.preventDefault();
 
-    const name = root.querySelector("#saveName").value;
-    const seed = root.querySelector("#seed").value;
+        const saveName = document.querySelector("#saveName").value;
+        const seedInput = document.querySelector("#seed").value;
 
-    if (!name) return alert("Entre un nom de sauvegarde");
+        const seed = seedInput ? Number(seedInput) : Date.now();
 
-    SaveManager.addSave(name, seed);
-    loadPage(createSavesPage);
-  });
+  root.querySelector("#createForm").addEventListener("submit", (event) => {
+    event.preventDefault();
 
-  return root;
+        createWorld(saveName, seed);
+        loadPage(createGamePage);
+
+        const { ctx, canvas, camera, then, fpsElement } = await init(seed);
+
+        camera.init(canvas, () => {
+            GameState.needsRedraw = true;
+        });
+
+        frame(seed, ctx, canvas, camera, tileSize, then, fpsElement);
+    });
+
+    return root;
 }
 
 function createEscMenu() {
-  const root = document.getElementById("app");
-  root.innerHTML = `
-    <section class="escMenu">
+    const root = document.createElement("section");
+    root.classList.add("escMenu");
+
+    root.innerHTML = `
       <div class="esc">
         <button id="backToGameButton" class="greyButton">Retour au Jeu</button>
         <button id="settingButton" class="greyButton">
@@ -92,16 +105,15 @@ function createEscMenu() {
           <a href="index.html">Retourner au menu et sauvegarder</a>
         </button>
       </div>
-    </section>
   `;
-  return root;
+    return root;
 }
 
 function createMainMenu() {
-  const root = document.getElementById("app");
+    const root = document.createElement("section");
+    root.classList.add("mainMenu");
 
-  root.innerHTML = `
-    <section class="mainMenu">
+    root.innerHTML = `
       <img src="assets/ui/logo.png" alt="logo" class="logo" />
       <div class="menu">
         <button id="soloButton" class="greyButton">Solo</button>
@@ -109,34 +121,33 @@ function createMainMenu() {
         <button id="settingButton" class="greyButton">Paramètres</button>
         <button id="quitButton" class="quitButton">Quitter</button>
       </div>
-    </section>
   `;
 
-  root.querySelector("#soloButton").addEventListener("click", () => {
-    loadPage(createSavesPage);
-  });
+    root.querySelector("#soloButton").addEventListener("click", () => {
+        loadPage(createSavesPage);
+    });
 
-  root.querySelector("#settingButton").addEventListener("click", () => {
-    loadPage(createSettingsPage);
-  });
+    root.querySelector("#settingButton").addEventListener("click", () => {
+        loadPage(createSettingsPage);
+    });
 
-  root.querySelector("#multiButton").addEventListener("click", () => {
-    alert("Le multijoueur n'est pas encore disponible");
-  });
+    root.querySelector("#multiButton").addEventListener("click", () => {
+        alert("Le multijoueur n'est pas encore disponible");
+    });
 
-  root.querySelector("#quitButton").addEventListener("click", () => {
-    alert("Impossible de quitter depuis un navigateur");
-  });
+    root.querySelector("#quitButton").addEventListener("click", () => {
+        alert("Impossible de quitter depuis un navigateur");
+    });
 
-  return root;
+    return root;
 }
 
 function createSavesPage() {
-  const root = document.getElementById("app");
-  const saves = SaveManager.loadSaves();
+    const root = document.createElement("section");
+    root.classList.add("savesMenu");
+    const saves = SaveManager.loadSaves();
 
-  root.innerHTML = `
-    <section class="savesMenu">
+    root.innerHTML = `
       <div class="head">
         <p>Sauvegardes</p>
         <div class="headButtons">
@@ -152,114 +163,111 @@ function createSavesPage() {
         <button class="modifButton">Modifier</button>
         <button class="playButton">Jouer</button>
       </div>
-    </section>
   `;
 
-  const container = root.querySelector(".saves");
-  const custom = root.querySelector(".custom");
+    const container = root.querySelector(".saves");
+    const custom = root.querySelector(".custom");
 
-  const suppBtn = root.querySelector(".suppButton");
-  const modifBtn = root.querySelector(".modifButton");
-  const playBtn = root.querySelector(".playButton");
+    const suppBtn = root.querySelector(".suppButton");
+    const modifBtn = root.querySelector(".modifButton");
+    const playBtn = root.querySelector(".playButton");
 
-  // --- Génération dynamique des saves ---
-  saves.forEach((save, index) => {
-    const card = document.createElement("div");
-    card.className = "saveCard";
-    card.dataset.index = index;
+    // --- Génération dynamique des saves ---
+    saves.forEach((save, index) => {
+        const card = document.createElement("div");
+        card.className = "saveCard";
+        card.dataset.index = index;
 
-    card.innerHTML = `
+        card.innerHTML = `
       <p>${save.name}</p>
       <p class="saveLastPlayed">Dernière partie : ${save.lastPlayed}</p>
     `;
 
-    // --- Event Listener : sélection d'une save ---
-    card.addEventListener("click", () => {
-      // Retirer l'ancienne sélection
-      root.querySelectorAll(".saveCard").forEach((c) => {
-        c.classList.remove("saveCardActive");
-      });
+        // --- Event Listener : sélection d'une save ---
+        card.addEventListener("click", () => {
+            // Retirer l'ancienne sélection
+            root.querySelectorAll(".saveCard").forEach(c => {
+                c.classList.remove("saveCardActive");
+            });
 
-      // Ajouter la nouvelle sélection
-      card.classList.add("saveCardActive");
+            // Ajouter la nouvelle sélection
+            card.classList.add("saveCardActive");
 
-      // Activer les boutons
-      suppBtn.classList.add("suppButtonActive");
-      modifBtn.classList.add("modifButtonActive");
-      playBtn.classList.add("playButtonActive");
+            // Activer les boutons
+            suppBtn.classList.add("suppButtonActive");
+            modifBtn.classList.add("modifButtonActive");
+            playBtn.classList.add("playButtonActive");
 
-      // Activer les effets hover/active
-      custom.classList.add("customActive");
+            // Activer les effets hover/active
+            custom.classList.add("customActive");
+        });
+
+        container.appendChild(card);
     });
 
-    container.appendChild(card);
-  });
+    // --- Bouton Créer ---
+    root.querySelector(".createButton").addEventListener("click", () => {
+        loadPage(createCreatePage);
+    });
 
-  // --- Bouton Créer ---
-  root.querySelector(".createButton").addEventListener("click", () => {
-    loadPage(createCreatePage);
-  });
+    // --- Bouton Retour ---
+    root.querySelector(".backButton").addEventListener("click", () => {
+        loadPage(createMainMenu);
+    });
 
-  // --- Bouton Retour ---
-  root.querySelector(".backButton").addEventListener("click", () => {
-    loadPage(createMainMenu);
-  });
+    // --- Bouton Supprimer ---
+    suppBtn.addEventListener("click", () => {
+        const selected = root.querySelector(".saveCardActive");
+        if (selected) {
+            const index = selected.dataset.index;
+            const saves = SaveManager.loadSaves();
+            saves.splice(index, 1);
+            SaveManager.saveAll(saves);
 
-  // --- Bouton Supprimer ---
-  suppBtn.addEventListener("click", () => {
-    const selected = root.querySelector(".saveCardActive");
-    if (selected) {
-      const index = selected.dataset.index;
-      const saves = SaveManager.loadSaves();
-      saves.splice(index, 1);
-      SaveManager.saveAll(saves);
+            loadPage(createSavesPage);
+        }
+    });
 
-      loadPage(createSavesPage);
-    }
-  });
+    // --- Bouton Modifier ---
+    modifBtn.addEventListener("click", () => {
+        alert("La modification n'est pas encore implémentée");
+    });
 
-  // --- Bouton Modifier ---
-  modifBtn.addEventListener("click", () => {
-    alert("La modification n'est pas encore implémentée");
-  });
+    // --- Bouton Jouer ---
+    playBtn.addEventListener("click", () => {
+        const selected = root.querySelector(".saveCardActive");
+        if (selected) {
+            alert("Chargement de la partie...");
+        }
+    });
 
-  // --- Bouton Jouer ---
-  playBtn.addEventListener("click", () => {
-    const selected = root.querySelector(".saveCardActive");
-    if (selected) {
-      alert("Chargement de la partie...");
-    }
-  });
-
-  return root;
+    return root;
 }
 
 function createSettingsPage() {
-  const root = document.getElementById("app");
+    const root = document.createElement("section");
+    root.classList.add("settingMenu");
 
-  root.innerHTML = `
-    <section class="settingMenu">
+    root.innerHTML = `
       <button class="backButton">Retour</button>
-    </section>
   `;
 
-  root.querySelector(".backButton").addEventListener("click", () => {
-    loadPage(createMainMenu);
-  });
+    root.querySelector(".backButton").addEventListener("click", () => {
+        loadPage(createMainMenu);
+    });
 
-  return root;
+    return root;
 }
 
 function createGamePage() {
-  const root = document.getElementById("app");
-  root.innerHTML = `
-    <section class="gamePage">
+    const root = document.createElement("section");
+    root.classList.add("gamePage");
+    root.innerHTML = `
         <div class="fps">fps: <span id="fps"></span></div>
         <canvas id="grid" width="window.innerWidth" height="window.innerHeight"></canvas>
         <script type="module" src="/src/main.js"></script>
-    </section>
   `;
-  return root;
+    return root;
 }
 
 // function createInventoryUI() {

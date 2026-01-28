@@ -499,4 +499,9 @@ form p {
   pointer-events: none;
   z-index: 1000;
   display: none;
+
+.fps {
+  position: absolute;
+  background-color: #555555;
+  opacity: 0.82;
 }

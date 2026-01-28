@@ -9,8 +9,15 @@ export function loadWorld(saveName) {
 
     const saveData = JSON.parse(json);
 
-    Chunks.clearAll();
+    // Reset chunk map (replacement for clearAll)
+    Chunks.chunks = new Map();
 
+    // Restore seed if needed
+    if (saveData.seed !== undefined) {
+        Chunks.seed = saveData.seed;
+    }
+
+    // Recreate chunks
     for (const data of saveData.chunks) {
         const chunk = Chunks.create(data.cx, data.cy);
         chunk.grid = data.grid;
