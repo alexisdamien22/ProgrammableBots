@@ -1,6 +1,7 @@
 import { Chunks } from "./chunks.js";
 import { saveWorld } from "./saveWorld.js";
 import { loadWorld } from "./loadWorld.js";
+import { generateChunk } from "../procedural/generateChunk.js";
 
 export function createWorld(saveName, seed) {
     // 1. Reset chunks map
@@ -14,7 +15,8 @@ export function createWorld(saveName, seed) {
 
     for (let cx = -radius; cx <= radius; cx++) {
         for (let cy = -radius; cy <= radius; cy++) {
-            Chunks.create(cx, cy);
+            const chunk = Chunks.create(cx, cy);
+            generateChunk(chunk, seed);
         }
     }
 

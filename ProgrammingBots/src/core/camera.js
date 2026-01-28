@@ -11,18 +11,21 @@ export const camera = {
     zoomFactor: 1.1,
 
     updateWorldPosition(tileSize, canvas) {
-        this.worldX =
-            (canvas.width / 2 - this.offsetX) / (tileSize * this.zoom);
-        this.worldY =
-            (canvas.height / 2 - this.offsetY) / (tileSize * this.zoom);
-        const cameraPos = toGrid(this.worldX, this.worldY, tileSize, this.zoom, this.offsetX, this.offsetY);
+        // Calculate world position based on current offsets
+        const screenCenterX = canvas.width / 2;
+        const screenCenterY = canvas.height / 2;
+        
+        const worldX = (screenCenterX - this.offsetX) / (tileSize * this.zoom);
+        const worldY = (screenCenterY - this.offsetY) / (tileSize * this.zoom);
+        
+        const cameraPos = toGrid(worldX, worldY, tileSize, this.zoom, this.offsetX, this.offsetY);
         this.worldX = cameraPos.x;
         this.worldY = cameraPos.y;
     },
 
     init(canvas, onChange) {
         this.offsetX = canvas.width / 2;
-        this.offsetY = canvas.height / 4;
+        this.offsetY = canvas.height / 2;
         this.onChange = onChange;
 
         canvas.addEventListener("wheel", (event) => {

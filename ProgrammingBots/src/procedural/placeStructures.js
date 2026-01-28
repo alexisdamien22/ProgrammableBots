@@ -1,4 +1,5 @@
 import { assets } from "../core/assets.js";
+import { addAssetToGrid } from "../core/grid.js";
 
 function canPlace(grid, x, y, asset) {
     for (let dx = 0; dx < asset.w; dx++) {
