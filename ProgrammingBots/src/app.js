@@ -1,3 +1,6 @@
+import { loadWorld } from "./world/loadWorld.js";
+import { saveWorld } from "./world/saveWorld.js";
+
 //for every page to load
 function loadPage(pageFn) {
   const app = document.getElementById("app");
@@ -73,7 +76,7 @@ function createCreatePage() {
 }
 
 function createEscMenu() {
-  const root = document.createElement("div");
+  const root = document.getElementById("app");
   root.innerHTML = `
     <section class="escMenu">
       <div class="esc">
@@ -91,7 +94,7 @@ function createEscMenu() {
 }
 
 function createMainMenu() {
-  const root = document.createElement("div");
+  const root = document.getElementById("app");
 
   root.innerHTML = `
     <section class="mainMenu">
@@ -125,7 +128,7 @@ function createMainMenu() {
 }
 
 function createSavesPage() {
-  const root = document.createElement("div");
+  const root = document.getElementById("app");
   const saves = SaveManager.loadSaves();
 
   root.innerHTML = `
@@ -228,7 +231,7 @@ function createSavesPage() {
 }
 
 function createSettingsPage() {
-  const root = document.createElement("div");
+  const root = document.getElementById("app");
 
   root.innerHTML = `
     <section class="settingMenu">
@@ -244,7 +247,7 @@ function createSettingsPage() {
 }
 
 function createGamePage() {
-  const root = document.createElement("div");
+  const root = document.getElementById("app");
   root.innerHTML = `
     <section class="gamePage">
         <div class="fps">fps: <span id="fps"></span></div>
