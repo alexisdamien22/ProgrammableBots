@@ -78,7 +78,7 @@ export function frame(SEED, ctx, canvas, camera, tileSize, then, fpsElement) {
     const cy = Math.floor(camera.worldY / CHUNK_SIZE);
 
     if (cx !== GameState.lastChunkX || cy !== GameState.lastChunkY) {
-        enqueueMissingChunks(camera, SEED, 5);
+        enqueueMissingChunks(camera, SEED, 7);
         GameState.lastChunkX = cx;
         GameState.lastChunkY = cy;
         GameState.needsRedraw = true;  // Add this flag
