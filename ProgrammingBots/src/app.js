@@ -1,10 +1,12 @@
 import { loadWorld } from "./world/loadWorld.js";
 import { saveWorld } from "./world/saveWorld.js";
 import { createWorld } from "./world/createWorld.js";
-import { tileSize } from "./world/worldVars.js"
+import { tileSize, CHUNK_SIZE } from "./world/worldVars.js"
+import { Chunks } from "./world/chunks.js";
+import { toScreen } from "./core/isometricTransformations.js";
 import { camera } from "./core/camera.js";
 import { init } from "./mainLoop.js";
-import { frame } from "./mainLoop.js";
+import { frame, stopFrame } from "./mainLoop.js";
 import { GameState } from "./mainLoop.js";
 import { initHandTracking } from "./ui/handManager.js";
 import { inventoryState } from "./ui/inventoryManager.js";
@@ -46,14 +48,14 @@ const SaveManager = {
     async getSave(name) {
         const key = `saves:${name}`;
         console.log("Looking for save with key:", key);
-        
+
         // First try IndexedDB
         const dbData = await loadGameFromDB(name);
         if (dbData) {
             console.log("Save found in IndexedDB");
             return dbData;
         }
-        
+
         // Fall back to localStorage (for migration)
         const data = localStorage.getItem(key);
         console.log("Raw data from localStorage:", data ? "exists" : "not found");
@@ -251,23 +253,23 @@ function createSavesPage() {
         playBtn.addEventListener("click", async () => {
             const selected = root.querySelector(".saveCardActive");
             console.log("Play button clicked, selected:", selected);
-            
+
             if (!selected) {
                 alert("Veuillez sélectionner une sauvegarde");
                 return;
             }
-            
+
             const saveName = saves[selected.dataset.index].name;
             console.log("Save name:", saveName);
-            
+
             const saveData = await SaveManager.getSave(saveName);
             console.log("Save data:", saveData);
-            
+
             if (!saveData) {
                 alert("Impossible de charger la sauvegarde");
                 return;
             }
-            
+
             try {
                 await SaveManager.updateLastPlayed(saveName);
                 GameState.currentSaveName = saveName;
@@ -276,10 +278,59 @@ function createSavesPage() {
 
                 const { ctx, canvas, camera, then, fpsElement } = await init(saveData.seed);
 
+                // initialize camera event handlers
                 camera.init(canvas, () => {
                     GameState.needsRedraw = true;
                 });
 
+                // restore saved camera position/zoom if present
+                if (saveData.camera) {
+                    camera.zoom = typeof saveData.camera.zoom === 'number' ? saveData.camera.zoom : camera.zoom;
+
+                    // If exact offsets were saved, prefer them (scale to current canvas size if necessary)
+                    if (typeof saveData.camera.offsetX === 'number' && typeof saveData.camera.offsetY === 'number') {
+                        const savedW = saveData.camera.canvasWidth || canvas.width;
+                        const savedH = saveData.camera.canvasHeight || canvas.height;
+
+                        // scale offsets proportionally to current canvas
+                        const scaleX = canvas.width / savedW;
+                        const scaleY = canvas.height / savedH;
+
+                        camera.offsetX = saveData.camera.offsetX * scaleX;
+                        camera.offsetY = saveData.camera.offsetY * scaleY;
+
+                        camera.updateWorldPosition(tileSize, canvas);
+                    } else if (typeof saveData.camera.worldX === 'number' && typeof saveData.camera.worldY === 'number') {
+                        // fallback: center the view on saved world coordinates
+                        const worldX = saveData.camera.worldX;
+                        const worldY = saveData.camera.worldY;
+
+                        const screenCenterX = canvas.width / 2;
+                        const screenCenterY = canvas.height / 2;
+
+                        camera.offsetX = screenCenterX - (worldX - worldY) * tileSize * camera.zoom;
+                        camera.offsetY = screenCenterY - (worldX + worldY) * tileSize * camera.zoom / 2;
+
+                        camera.updateWorldPosition(tileSize, canvas);
+                    }
+
+                    // if the restored camera points to a chunk that doesn't exist anymore,
+                    // reset to a safe default (center) to avoid rendering nothing.
+                    const cx = Math.floor(camera.worldX / CHUNK_SIZE);
+                    const cy = Math.floor(camera.worldY / CHUNK_SIZE);
+                    if (!Chunks.get(cx, cy)) {
+                        console.warn("Restored camera targets missing chunk, recentering camera");
+                        camera.offsetX = canvas.width / 2;
+                        camera.offsetY = canvas.height / 2;
+                        camera.zoom = 1;
+                        camera.updateWorldPosition(tileSize, canvas);
+                    }
+
+                    if (camera.onChange) camera.onChange();
+                }
+
+                // stop any previous frame loop before starting a new one
+                try { stopFrame(); } catch (e) { }
                 frame(saveData.seed, ctx, canvas, camera, tileSize, then, fpsElement);
             } catch (err) {
                 console.error("Error loading game:", err);
@@ -387,12 +438,12 @@ function openEscMenu() {
     console.log("Esc menu opened");
 
     // Button event
-    root.querySelector("#backToGameButton").addEventListener("click",() => {
+    root.querySelector("#backToGameButton").addEventListener("click", () => {
         GameState.escMenuOpen = false;
         closeEscMenu();
     });
 
-    root.querySelector("#settingButton").addEventListener("click",() => {
+    root.querySelector("#settingButton").addEventListener("click", () => {
         alert("Les paramètres avancés ne sont pas encore disponibles");
     });
 

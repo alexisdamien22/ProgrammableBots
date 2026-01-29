@@ -24,18 +24,18 @@ export async function init(SEED) {
     // Initialize camera offsets first
     camera.offsetX = canvas.width / 2;
     camera.offsetY = canvas.height / 2;
-    
+
     console.log(`Camera offsets set to: (${camera.offsetX}, ${camera.offsetY})`);
-    
+
     camera.updateWorldPosition(tileSize, canvas);
     console.log(`Camera world position after init: (${camera.worldX}, ${camera.worldY})`);
-    
+
     updateChunks(camera, SEED, 2);
-    
+
     const chunk = Chunks.get(0, 0);
     console.log(`Chunk (0,0) exists: ${!!chunk}`);
     console.log(`Total chunks after init: ${Array.from(Chunks.getAllChunks()).length}`);
-    
+
     if (chunk) {
         addAssetToGrid(chunk.grid, {
             type: "spaceShuttle",
@@ -86,5 +86,16 @@ export function frame(SEED, ctx, canvas, camera, tileSize, then, fpsElement) {
         GameState.needsRedraw = false;
     }
 
-    requestAnimationFrame(() => frame(SEED, ctx, canvas, camera, tileSize, then, fpsElement));
+    // schedule next frame and store handle so it can be cancelled when restarting
+    if (typeof window !== 'undefined') {
+        if (frame._handle) cancelAnimationFrame(frame._handle);
+        frame._handle = requestAnimationFrame(() => frame(SEED, ctx, canvas, camera, tileSize, then, fpsElement));
+    }
+}
+
+export function stopFrame() {
+    if (frame._handle) {
+        cancelAnimationFrame(frame._handle);
+        frame._handle = null;
+    }
 }

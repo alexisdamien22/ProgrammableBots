@@ -11,73 +11,100 @@ export const camera = {
     zoomFactor: 1.1,
 
     updateWorldPosition(tileSize, canvas) {
-        // Calculate world position based on current offsets
         const screenCenterX = canvas.width / 2;
         const screenCenterY = canvas.height / 2;
-        
+
         const worldX = (screenCenterX - this.offsetX) / (tileSize * this.zoom);
         const worldY = (screenCenterY - this.offsetY) / (tileSize * this.zoom);
-        
+
         const cameraPos = toGrid(worldX, worldY, tileSize, this.zoom, this.offsetX, this.offsetY);
         this.worldX = cameraPos.x;
         this.worldY = cameraPos.y;
     },
 
     init(canvas, onChange) {
-        this.offsetX = canvas.width / 2;
-        this.offsetY = canvas.height / 2;
+        // store onChange callback
         this.onChange = onChange;
 
-        canvas.addEventListener("wheel", (event) => {
+        // detach previous handlers if attached
+        if (this._attachedCanvas) {
+            try {
+                this._attachedCanvas.removeEventListener("wheel", this._wheelHandler);
+                this._attachedCanvas.removeEventListener("mousedown", this._mouseDownHandler);
+                this._attachedCanvas.removeEventListener("mousemove", this._mouseMoveHandler);
+                this._attachedCanvas.removeEventListener("mouseup", this._mouseUpHandler);
+                this._attachedCanvas.removeEventListener("mouseleave", this._mouseLeaveHandler);
+                window.removeEventListener("resize", this._resizeHandler);
+            } catch (e) {
+                // ignore
+            }
+        }
+
+        // bound handlers
+        this._wheelHandler = (event) => {
             event.preventDefault();
 
             const mouseX = event.clientX;
             const mouseY = event.clientY;
 
-            // 1. World position BEFORE zoom (in screen-space world coords)
             const worldBeforeX = (mouseX - this.offsetX) / this.zoom;
             const worldBeforeY = (mouseY - this.offsetY) / this.zoom;
 
-            // 2. Apply zoom
-            const oldZoom = this.zoom;
             this.zoom *= event.deltaY < 0 ? this.zoomFactor : 1 / this.zoomFactor;
             this.zoom = Math.max(0.5, Math.min(this.zoom, 5));
 
-            // 3. World position AFTER zoom
             const worldAfterX = (mouseX - this.offsetX) / this.zoom;
             const worldAfterY = (mouseY - this.offsetY) / this.zoom;
 
-            // 4. Adjust offset so the world stays under the mouse
             this.offsetX += (worldAfterX - worldBeforeX) * this.zoom;
             this.offsetY += (worldAfterY - worldBeforeY) * this.zoom;
 
-            this.onChange();
-        });
+            if (this.onChange) this.onChange();
+        };
 
-        canvas.addEventListener("mousedown", (event) => {
+        this._mouseDownHandler = (event) => {
             this.isDragging = true;
             this.lastX = event.clientX;
             this.lastY = event.clientY;
-        });
+        };
 
-        canvas.addEventListener("mousemove", (event) => {
+        this._mouseMoveHandler = (event) => {
             if (!this.isDragging) return;
             this.offsetX += event.clientX - this.lastX;
             this.offsetY += event.clientY - this.lastY;
             this.lastX = event.clientX;
             this.lastY = event.clientY;
-            onChange();
-        });
+            if (this.onChange) this.onChange();
+        };
 
-        canvas.addEventListener("mouseup", () => this.isDragging = false);
-        canvas.addEventListener("mouseleave", () => this.isDragging = false);
+        this._mouseUpHandler = () => {
+            this.isDragging = false;
+        };
 
-        window.addEventListener("resize", () => {
+        this._mouseLeaveHandler = () => {
+            this.isDragging = false;
+        };
+
+        this._resizeHandler = () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            onChange();
-        });
+            if (this.onChange) this.onChange();
+        };
 
-        this.onChange();
+        // attach
+        this._attachedCanvas = canvas;
+
+        if (!this.offsetX) this.offsetX = canvas.width / 2;
+        if (!this.offsetY) this.offsetY = canvas.height / 2;
+
+        canvas.addEventListener("wheel", this._wheelHandler);
+        canvas.addEventListener("mousedown", this._mouseDownHandler);
+        canvas.addEventListener("mousemove", this._mouseMoveHandler);
+        canvas.addEventListener("mouseup", this._mouseUpHandler);
+        canvas.addEventListener("mouseleave", this._mouseLeaveHandler);
+
+        window.addEventListener("resize", this._resizeHandler);
+
+        if (this.onChange) this.onChange();
     }
 };

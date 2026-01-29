@@ -1,6 +1,7 @@
 import { Chunks } from "./chunks.js";
 import { inventoryState } from "../ui/inventoryManager.js";
 import { saveGameToDB, initDatabase } from "./saveDatabase.js";
+import { camera } from "../core/camera.js";
 
 export async function saveWorld(saveName, metadata = {}) {
     const savedChunks = [];
@@ -33,6 +34,16 @@ export async function saveWorld(saveName, metadata = {}) {
         timestamp: Date.now(),
         lastPlayed: new Date().toLocaleDateString("fr-FR"),
         seed: Chunks.seed,
+        // Save camera both as world/grid coords and exact screen offsets + canvas size
+        camera: {
+            worldX: camera.worldX,
+            worldY: camera.worldY,
+            offsetX: camera.offsetX,
+            offsetY: camera.offsetY,
+            zoom: camera.zoom,
+            canvasWidth: (typeof window !== 'undefined') ? window.innerWidth : null,
+            canvasHeight: (typeof window !== 'undefined') ? window.innerHeight : null
+        },
         chunks: savedChunks,
         inventory: {
             slots: inventoryState.slots,
