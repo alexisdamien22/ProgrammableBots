@@ -1,0 +1,157 @@
+:root {
+  --fond-ecran: #2c241a;
+  --papier-vieux: #d9c5a3;
+  --papier-clair: #e8dbc1;
+  --papier-sombre: #bfa583;
+  --encre: #362f28;
+  --bordure-or: #a67c52;
+  --bordure-cadre: #5c4b37;
+  --succes: #4a6348;
+  --erreur: #8c3b31;
+}
+
+body {
+  background-color: var(--fond-ecran);
+  background-image: url("https://www.transparenttextures.com/patterns/leather.png");
+  color: var(--encre);
+  font-family: "Georgia", serif;
+  margin: 0;
+  display: flex;
+  height: 100vh;
+}
+
+.game-wrapper {
+  display: flex;
+  width: 100%;
+  padding: 30px;
+  gap: 20px;
+  box-sizing: border-box;
+}
+
+.crafting-area {
+  flex: 3;
+  background: var(--papier-vieux);
+  background-image: radial-gradient(
+    circle at center,
+    var(--papier-clair) 0%,
+    var(--papier-vieux) 70%,
+    var(--papier-sombre) 100%
+  );
+  padding: 30px;
+  border: 10px double var(--bordure-cadre);
+  box-shadow:
+    inset 0 0 50px rgba(0, 0, 0, 0.2),
+    0 10px 30px rgba(0, 0, 0, 0.5);
+  overflow-y: auto;
+}
+
+.title {
+  text-align: center;
+  font-variant: small-caps;
+  border-bottom: 2px solid var(--bordure-or);
+  padding-bottom: 10px;
+}
+
+.category h2 {
+  font-size: 1.2em;
+  border-bottom: 1px dashed var(--bordure-cadre);
+  margin-top: 25px;
+  font-style: italic;
+}
+
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.craft-tile {
+  position: relative;
+  width: 120px;
+  height: 130px;
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--bordure-cadre);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+}
+
+.craft-tile:hover {
+  background: rgba(166, 124, 82, 0.2);
+  transform: scale(1.02);
+  border-color: var(--bordure-or);
+}
+
+.img-container img {
+  max-width: 60px;
+  filter: sepia(0.6) contrast(1.1);
+}
+
+.tooltip {
+  visibility: hidden;
+  position: absolute;
+  bottom: 110%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fdfaf3;
+  padding: 10px;
+  border: 1px solid var(--bordure-or);
+  width: 150px;
+  font-size: 0.8em;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+}
+
+.craft-tile:hover .tooltip {
+  visibility: visible;
+}
+
+.sidebar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.inventory-card,
+.log-card {
+  background: var(--papier-vieux);
+  border: 4px double var(--bordure-cadre);
+  padding: 15px;
+  overflow-y: auto;
+}
+
+.inventory-card {
+  flex: 1.5;
+}
+.log-card {
+  flex: 1;
+  background-color: #cfbc9a;
+  font-family: monospace;
+}
+
+.inv-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.success {
+  color: var(--succes);
+  font-weight: bold;
+}
+.error {
+  color: var(--erreur);
+  font-style: italic;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--bordure-cadre);
+}
