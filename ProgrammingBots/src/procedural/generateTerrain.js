@@ -1,15 +1,35 @@
 import { Noise } from "./noise.js";
 import { addAssetToGrid } from "../core/grid.js";
 
+const noiseCache = new Map();
+
+function getNoiseForSeed(seed) {
+	let n = noiseCache.get(seed);
+	if (!n) {
+		n = {
+			temperature: new Noise(seed),
+			humidity: new Noise(seed + 50),
+			water: new Noise(seed + 200),
+			acid: new Noise(seed + 300),
+			copper: new Noise(seed + 400),
+			iron: new Noise(seed + 500),
+			rareOre: new Noise(seed + 600),
+			forest: new Noise(seed + 700),
+		};
+		noiseCache.set(seed, n);
+	}
+	return n;
+}
+
 export function generateTerrainPerChunk(grid, cx, cy, chunkSize, seed = 1) {
-    const temperatureNoise = new Noise(seed);
-    const humidityNoise = new Noise(seed + 50);
-    const waterNoise = new Noise(seed + 200); // lacs/rivières pour plaine/forêt
-    const acidNoise = new Noise(seed + 300);  // lacs d'acide
-    const copperNoise = new Noise(seed + 400); // minerais de "copper"
-    const ironNoise = new Noise(seed + 500); // minerais d'"iron"
-    const rareOreNoise = new Noise(seed + 600); // génération de minerais rares
-    const forestNoise = new Noise(seed + 700); // génération de minerais rares
+    const temperatureNoise = getNoiseForSeed(seed).temperature;
+	const humidityNoise = getNoiseForSeed(seed).humidity;
+	const waterNoise = getNoiseForSeed(seed).water;
+	const acidNoise = getNoiseForSeed(seed).acid;
+	const copperNoise = getNoiseForSeed(seed).copper;
+	const ironNoise = getNoiseForSeed(seed).iron;
+	const rareOreNoise = getNoiseForSeed(seed).rareOre;
+	const forestNoise = getNoiseForSeed(seed).forest;
 
     const ironScale = 0.1;
     const forestScale = 0.2;

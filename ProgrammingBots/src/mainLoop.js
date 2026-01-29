@@ -1,6 +1,10 @@
 import { camera } from "./core/camera.js";
 import { loadAssets } from "./loader/loadAssets.js";
-import { updateChunks } from "./core/chunkLoader.js";
+import {
+	updateChunks,
+	enqueueMissingChunks,
+	processChunkQueue,
+} from "./core/chunkLoader.js";
 import { drawWorld } from "./render/drawWorld.js";
 import { CHUNK_SIZE } from "./world/worldVars.js";
 import { Chunks } from "./world/chunks.js";
@@ -25,24 +29,19 @@ export async function init(SEED) {
     camera.offsetX = canvas.width / 2;
     camera.offsetY = canvas.height / 2;
 
-    console.log(`Camera offsets set to: (${camera.offsetX}, ${camera.offsetY})`);
-
     camera.updateWorldPosition(tileSize, canvas);
-    console.log(`Camera world position after init: (${camera.worldX}, ${camera.worldY})`);
-
     updateChunks(camera, SEED, 2);
-
     const chunk = Chunks.get(0, 0);
-    console.log(`Chunk (0,0) exists: ${!!chunk}`);
-    console.log(`Total chunks after init: ${Array.from(Chunks.getAllChunks()).length}`);
-
-    if (chunk) {
-        addAssetToGrid(chunk.grid, {
-            type: "spaceShuttle",
-            origin: { x: 0, y: 0 },
-            localOffset: { dx: 0, dy: 0 }
-        }, 8, 8);
-    }
+    addAssetToGrid(
+		chunk.grid,
+		{
+			type: "spaceShuttle",
+			origin: { x: 0, y: 0 },
+			localOffset: { dx: 0, dy: 0 },
+		},
+		0,
+		0,
+	);
     return { ctx, canvas, camera, then, fpsElement };
 }
 
@@ -51,6 +50,7 @@ export const GameState = {
     lastChunkX: null,
     lastChunkY: null,
     needsRedraw: true,
+    lastFpsUpdate: 0,
     inventoryOpen: false,
     escMenuOpen: false,
     currentSaveName: null
@@ -66,7 +66,11 @@ export function frame(SEED, ctx, canvas, camera, tileSize, then, fpsElement) {
 
     // compute fps
     let fps = 1 / elapsedTime;
-    fpsElement.innerText = fps.toFixed(2);
+    const nowMs = Date.now();
+	if (nowMs - GameState.lastFpsUpdate > 250) {
+		fpsElement.innerText = fps.toFixed(1);
+		GameState.lastFpsUpdate = nowMs;
+	}
 
     camera.updateWorldPosition(tileSize, canvas);
 
@@ -74,11 +78,14 @@ export function frame(SEED, ctx, canvas, camera, tileSize, then, fpsElement) {
     const cy = Math.floor(camera.worldY / CHUNK_SIZE);
 
     if (cx !== GameState.lastChunkX || cy !== GameState.lastChunkY) {
-        updateChunks(camera, SEED, 5);
+        enqueueMissingChunks(camera, SEED, 5);
         GameState.lastChunkX = cx;
         GameState.lastChunkY = cy;
         GameState.needsRedraw = true;  // Add this flag
     }
+
+    if (processChunkQueue(SEED, 2)) GameState.needsRedraw = true;
+	Chunks.unloadChunksOutsideRange(cx, cy, 7);
 
     if (GameState.needsRedraw) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);

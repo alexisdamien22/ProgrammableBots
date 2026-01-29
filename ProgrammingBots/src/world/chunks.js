@@ -26,4 +26,30 @@ export class Chunks {
     static getAllChunks() {
         return Chunks.chunks.values();
     }
+
+    static getChunksInRange(centerCx, centerCy, viewDistance) {
+		const out = [];
+		for (
+			let cy = centerCy - viewDistance;
+			cy <= centerCy + viewDistance;
+			cy++
+		) {
+			for (
+				let cx = centerCx - viewDistance;
+				cx <= centerCx + viewDistance;
+				cx++
+			) {
+				if (Chunks.has(cx, cy)) out.push(Chunks.get(cx, cy));
+			}
+		}
+		return out;
+	}
+
+	static unloadChunksOutsideRange(centerCx, centerCy, keepDistance) {
+		for (const [key, chunk] of Chunks.chunks.entries()) {
+			const dx = Math.abs(chunk.cx - centerCx);
+			const dy = Math.abs(chunk.cy - centerCy);
+			if (Math.max(dx, dy) > keepDistance) Chunks.chunks.delete(key);
+		}
+	}
 }

@@ -3,15 +3,13 @@ import { saveWorld } from "./world/saveWorld.js";
 import { createWorld } from "./world/createWorld.js";
 import { tileSize, CHUNK_SIZE } from "./world/worldVars.js"
 import { Chunks } from "./world/chunks.js";
-import { toScreen } from "./core/isometricTransformations.js";
-import { camera } from "./core/camera.js";
 import { init } from "./mainLoop.js";
 import { frame, stopFrame } from "./mainLoop.js";
 import { GameState } from "./mainLoop.js";
 import { initHandTracking } from "./ui/handManager.js";
 import { inventoryState } from "./ui/inventoryManager.js";
 import { renderSlotContent } from "./ui/inventoryUI.js";
-import { initDatabase, saveGameToDB, loadGameFromDB, listAllSaves, deleteGameFromDB } from "./world/saveDatabase.js";
+import { saveGameToDB, loadGameFromDB, listAllSaves, deleteGameFromDB } from "./world/saveDatabase.js";
 
 //for every page to load
 function loadPage(pageFn) {
