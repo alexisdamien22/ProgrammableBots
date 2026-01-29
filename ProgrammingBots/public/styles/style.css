@@ -529,3 +529,94 @@ form p {
     background-color: #555555;
     opacity: 0.82;
 }
+
+/* temp for crafting menu */
+
+
+.craft-panel {
+    background-color: #555555b9;
+    padding: 2vw;
+    border-radius: 15px;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.434);
+    width: 90vw;
+    max-width: 900px;
+    max-height: 80vh;
+    overflow-y: auto;
+    font-family: "Press Start 2P", cursive;
+    color: white;
+}
+
+.craft-title {
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px #000;
+    text-align: center;
+}
+
+.recette {
+    display: flex;
+    gap: 20px;
+    padding: 15px;
+    background: #dcdcdc7a;
+    border: 0.5vw solid black;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: transform 0.1s ease;
+}
+
+.recette:hover {
+    transform: translateY(-3px);
+}
+
+.recette img {
+    width: 70px;
+    height: 70px;
+    image-rendering: pixelated;
+    background: #111;
+    border-radius: 8px;
+    padding: 5px;
+}
+
+.infos {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+}
+
+.nom {
+    font-size: 1rem;
+    color: #fff;
+    text-shadow: 2px 2px #000;
+}
+
+.niv {
+    font-size: 0.8rem;
+    color: #ddd;
+}
+
+.ingredients {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.ing {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #333333cc;
+    padding: 6px 8px;
+    border-radius: 8px;
+    border: 2px solid black;
+}
+
+.ing img {
+    width: 32px;
+    height: 32px;
+    image-rendering: pixelated;
+    background: #111;
+    border-radius: 4px;
+}

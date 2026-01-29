@@ -1,0 +1,52 @@
+{
+  "grass_blue": {
+    "src": "tiles/grass_blue.png",
+    "w": 1,
+    "h": 1
+  },
+  "grass_red": {
+    "src": "tiles/grass_red.png",
+    "w": 1,
+    "h": 1
+  },
+  "water_blue": {
+    "src": "tiles/water_blue.png",
+    "w": 1,
+    "h": 1
+  },
+  "water_red": {
+    "src": "tiles/water_red.png",
+    "w": 1,
+    "h": 1
+  },
+  "acid_lake": {
+    "src": "tiles/acid_lake.png",
+    "w": 1,
+    "h": 1
+  },
+  "acid_ground": {
+    "src": "tiles/acid_ground.png",
+    "w": 1,
+    "h": 1
+  },
+  "noxalite": {
+    "src": "tiles/noxalite.png",
+    "w": 1,
+    "h": 1
+  },
+  "helionite": {
+    "src": "tiles/helionite.png",
+    "w": 1,
+    "h": 1
+  },
+  "copper": {
+    "src": "tiles/copper.png",
+    "w": 1,
+    "h": 1
+  },
+  "iron": {
+    "src": "tiles/iron.png",
+    "w": 1,
+    "h": 1
+  }
+}

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&family=Press+Start+2P&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="../ProgrammingBots/public/styles/style.css">
+    <title>Livre de Recettes</title>
+</head>
+
+<body>
+    <div class="craft-panel">
+        <div class="craft-title">Recettes</div>
+        <div id="livre"></div>
+    </div>
+    <script>
+        const nomsAffiches = {
+            avitrineOre: "Minerai d'Avitrine",
+            helioniteOre: "Minerai d'Hélionite",
+            noxaliteOre: "Minerai de Noxalite",
+            ironOre: "Minerai de Fer",
+            copperOre: "Minerai de Cuivre",
+
+            refinedAvitrine: "Avitrine Raffinée",
+            refinedHelionite: "Hélionite Raffinée",
+            refinedNoxalite: "Noxalite Raffinée",
+
+            ironIngot: "Lingot de Fer",
+            copperIngot: "Lingot de Cuivre",
+
+            emptyUpgrade: "Cartouche Vide",
+            filter: "Filtre",
+            smallMotor: "Micro‑Moteur",
+            furnace: "Fourneau",
+            storage: "Bac de Stockage",
+            solarPanel: "Panneau Solaire",
+            chargingStation: "Station de Recharge",
+            tracks: "Chenilles",
+            propeller: "Hélice",
+            drillerArm: "Bras Foreuse",
+            gasMask: "Masque à Gaz",
+            storageUpgrade: "Module Stockage",
+            efficiencyUpgrade: "Module Minage",
+            speedUpgrade: "Module Vitesse",
+            batteryUpgrade: "Module Batterie",
+            medKit: "Kit Médical",
+            assembler_1: "Assembleur MK1"
+        };
+
+        /* --- TES DONNÉES EXACTES --- */
+        const inventaire = {
+            avitrineOre: 0,
+            helioniteOre: 0,
+            noxaliteOre: 0,
+            ironOre: 0,
+            copperOre: 0,
+            refinedAvitrine: 0,
+            refinedHelionite: 0,
+            refinedNoxalite: 0,
+            ironIngot: 0,
+            copperIngot: 0,
+            emptyUpgrade: 0,
+            filter: 0,
+            smallMotor: 0,
+            furnace: 0,
+            storage: 0,
+            solarPanel: 0,
+            chargingStation: 0,
+            tracks: 0,
+            propeller: 0,
+            drillerArm: 0,
+            gasMask: 0,
+            storageUpgrade: 0,
+            efficiencyUpgrade: 0,
+            speedUpgrade: 0,
+            batteryUpgrade: 0,
+            medKit: 0,
+            assembler_1: 0,
+        };
+
+        const recettes = [
+            {
+                id: "emptyUpgrade",
+                nom: "Cartouche Vide",
+                niv: 2,
+                prix: { ironIngot: 2, copperIngot: 1 },
+                img: "./assets/items/emptyUpgrade.png"
+            },
+            {
+                id: "filter",
+                nom: "Filtre",
+                niv: 2,
+                prix: { refinedHelionite: 2, refinedNoxalite: 1 },
+                img: "./assets/items/filter.png"
+            },
+            {
+                id: "smallMotor",
+                nom: "Micro-Moteur",
+                niv: 2,
+                prix: { ironIngot: 1, copperIngot: 2, refinedAvitrine: 1 },
+                img: "./assets/items/smallMotor.png"
+            },
+            {
+                id: "furnace",
+                nom: "Fourneau",
+                niv: 3,
+                prix: { ironIngot: 4 },
+                img: "./assets/objects/furnaceOn.png"
+            },
+            {
+                id: "storage",
+                nom: "Bac de Stockage",
+                niv: 3,
+                prix: { ironIngot: 3, refinedNoxalite: 2 },
+                img: "./assets/objects/storage.png"
+            },
+            {
+                id: "solarPanel",
+                nom: "Panneau Solaire",
+                niv: 3,
+                prix: { copperIngot: 2, refinedHelionite: 3 },
+                img: "./assets/objects/solarPanel.png"
+            },
+            {
+                id: "chargingStation",
+                nom: "Station de Recharge",
+                niv: 3,
+                prix: { ironIngot: 4, copperIngot: 2 },
+                img: "./assets/objects/chargingStation.png"
+            },
+            {
+                id: "tracks",
+                nom: "Chenilles",
+                niv: 3,
+                prix: { smallMotor: 2, ironIngot: 1 },
+                img: "./assets/items/tracks.png"
+            },
+            {
+                id: "propeller",
+                nom: "Hélice",
+                niv: 3,
+                prix: { smallMotor: 2, copperIngot: 1 },
+                img: "./assets/items/propeller.png"
+            },
+            {
+                id: "drillerArm",
+                nom: "Bras Foreuse",
+                niv: 3,
+                prix: { smallMotor: 1, refinedNoxalite: 4 },
+                img: "./assets/items/drillerArm.png"
+            },
+            {
+                id: "gasMask",
+                nom: "Masque à Gaz",
+                niv: 3,
+                prix: { filter: 1, copperIngot: 2 },
+                img: "./assets/items/gasMask.png"
+            },
+            {
+                id: "storageUpgrade",
+                nom: "Module Stockage",
+                niv: 3,
+                prix: { emptyUpgrade: 1, refinedNoxalite: 4 },
+                img: "./assets/items/storageUpgrade.png"
+            },
+            {
+                id: "efficiencyUpgrade",
+                nom: "Module Minage",
+                niv: 3,
+                prix: { emptyUpgrade: 1, copperIngot: 4, refinedNoxalite: 2 },
+                img: "./assets/items/efficiencyUpgrade.png"
+            },
+            {
+                id: "speedUpgrade",
+                nom: "Module Vitesse",
+                niv: 3,
+                prix: { emptyUpgrade: 1, refinedHelionite: 4 },
+                img: "./assets/items/speedUpgrade.png"
+            },
+            {
+                id: "batteryUpgrade",
+                nom: "Module Batterie",
+                niv: 3,
+                prix: { emptyUpgrade: 1, refinedAvitrine: 4 },
+                img: "./assets/items/batteryUpgrade.png"
+            },
+            {
+                id: "medKit",
+                nom: "KIT MÉDICAL",
+                niv: 4,
+                prix: { emptyUpgrade: 2, filter: 2, refinedAvitrine: 4 },
+                img: "./assets/items/medKit.png"
+            },
+        ];
+
+        /* --- TON CODE DE CRAFT EXACT --- */
+        function fabriquer(idDemande) {
+            const recette = recettes.find(r => r.id === idDemande);
+            if (!recette) return;
+
+            let assez = true;
+            for (let ing in recette.prix) {
+                if ((inventaire[ing] || 0) < recette.prix[ing]) {
+                    assez = false;
+                    break;
+                }
+            }
+
+            if (assez) {
+                for (let ing in recette.prix) inventaire[ing] -= recette.prix[ing];
+                inventaire[idDemande]++;
+                alert("+1 " + recette.nom + " assemblé");
+            } else {
+                alert("Ressources insuffisantes pour " + recette.nom);
+            }
+        }
+
+        /* --- AFFICHAGE DU LIVRE --- */
+        function afficherLivre() {
+            const livre = document.getElementById("livre");
+
+            recettes.forEach(r => {
+
+                // Génération des ingrédients avec images
+                let ingredientsHTML = "";
+                for (let ing in r.prix) {
+                    const imgPath = `./assets/items/${ing}.png`; // chemin auto basé sur le nom
+                    ingredientsHTML += `
+        <div class="ing">
+          <img src="${imgPath}" onerror="this.style.display='none'">
+          <span>${r.prix[ing]} x ${nomsAffiches[ing] || ing}</span>
+        </div>
+      `;
+                }
+
+                livre.innerHTML += `
+      <div class="recette" onclick="fabriquer('${r.id}')">
+        <img src="${r.img}" onerror="this.style.display='none'">
+        <div class="infos">
+          <div class="nom">${r.nom}</div>
+          <div class="niv">Niveau ${r.niv}</div>
+
+          <div class="ingredients">
+            ${ingredientsHTML}
+          </div>
+        </div>
+      </div>
+    `;
+            });
+        }
+
+
+        afficherLivre();
+    </script>
+
+</body>
+
+</html>
