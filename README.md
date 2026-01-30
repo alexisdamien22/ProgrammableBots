@@ -1,12 +1,10 @@
 🤖 NanoForge — Jeu de Colonisation Robotique Procédural
 
-NanoForge est un jeu de fabrication et d’évolution où le joueur dirige un robots chargés d’explorer un monde généré procéduralement, récolter des ressources, transformer des minerais rares, et construire des machines et items permettant de sauver un être humain.
+NanoForge est un jeu de fabrication et d’évolution où le joueur dirige un robots drone a l'aide d'une vue caméra chargé d’explorer un monde généré procéduralement, récolter des ressources, transformer des minerais rares, et construire des machines et items permettant de sauver un être humain.
 
 🎯 Concept
 
-Le joueur commence avec des robots basiques dans un environnement inconnu.
-En récoltant des minerais et en fabriquant des composants, il développe progressivement une colonie robotique autonome.
-
+Le joueur commence dans un environnement inconnu.
 Objectif final : Soigner un être humain malade.
 
 ⚙️ Fonctionnalités
