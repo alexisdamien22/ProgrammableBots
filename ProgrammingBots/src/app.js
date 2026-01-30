@@ -509,4 +509,58 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
+document.addEventListener("contextmenu", (e) => {
+    e.preventDefault();
+
+    const rect = document.getBoundingClientRect();
+    const screenX = e.clientX - rect.left;
+    const screenY = e.clientY - rect.top;
+
+    // écran → monde
+    const wx = Math.floor(screenX + camera.x);
+    const wy = Math.floor(screenY + camera.y);
+
+    const CHUNK_SIZE = 16;
+
+    // monde → chunk
+    const cx = Math.floor(wx / CHUNK_SIZE) * CHUNK_SIZE;
+    const cy = Math.floor(wy / CHUNK_SIZE) * CHUNK_SIZE;
+
+    const x = wx - cx;
+    const y = wy - cy;
+
+    const chunk = getChunk(cx, cy);
+    if (!chunk) return;
+
+    const block = chunk.blocks[y][x];
+    if (!block) return;
+
+    if (block.type === "iron") {
+        // ajouter à l’inventaire
+        player.inventory.add(block.oreType, 1);
+
+        console.log("Minerai récupéré :", block.oreType);
+    }else if (block.type === "copper") {
+        // ajouter à l’inventaire
+        player.inventory.add(block.oreType, 1);
+
+        console.log("Minerai récupéré :", block.oreType);
+    }else if (block.type === "helionite") {
+        // ajouter à l’inventaire
+        player.inventory.add(block.oreType, 1);
+
+        console.log("Minerai récupéré :", block.oreType);
+    }else if (block.type === "noxalite") {
+        // ajouter à l’inventaire
+        player.inventory.add(block.oreType, 1);
+
+        console.log("Minerai récupéré :", block.oreType);
+    }else if (block.type === "avitrine") {
+        // ajouter à l’inventaire
+        player.inventory.add(block.oreType, 1);
+
+        console.log("Minerai récupéré :", block.oreType);
+    }
+});
+
 loadPage(createMainMenu);
