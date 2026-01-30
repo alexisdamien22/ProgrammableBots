@@ -1,4 +1,4 @@
-🤖 NanoForge — Jeu de Colonisation Robotique Procédural
+🤖 NanoForge — Jeu d'aventure.
 
 NanoForge est un jeu de fabrication et d’évolution où le joueur dirige un robots drone a l'aide d'une vue caméra chargé d’explorer un monde généré procéduralement, récolter des ressources, transformer des minerais rares, et construire des machines et items permettant de sauver un être humain.
 
