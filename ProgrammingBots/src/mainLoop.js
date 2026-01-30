@@ -1,9 +1,9 @@
 import { camera } from "./core/camera.js";
 import { loadAssets } from "./loader/loadAssets.js";
 import {
-	updateChunks,
-	enqueueMissingChunks,
-	processChunkQueue,
+    updateChunks,
+    enqueueMissingChunks,
+    processChunkQueue,
 } from "./core/chunkLoader.js";
 import { drawWorld } from "./render/drawWorld.js";
 import { CHUNK_SIZE } from "./world/worldVars.js";
@@ -33,15 +33,15 @@ export async function init(SEED) {
     updateChunks(camera, SEED, 2);
     const chunk = Chunks.get(0, 0);
     addAssetToGrid(
-		chunk.grid,
-		{
-			type: "spaceShuttle",
-			origin: { x: 0, y: 0 },
-			localOffset: { dx: 0, dy: 0 },
-		},
-		0,
-		0,
-	);
+        chunk.grid,
+        {
+            type: "spaceShuttle",
+            origin: { x: 0, y: 0 },
+            localOffset: { dx: 0, dy: 0 },
+        },
+        0,
+        0,
+    );
     return { ctx, canvas, camera, then, fpsElement };
 }
 
@@ -51,6 +51,7 @@ export const GameState = {
     lastChunkY: null,
     needsRedraw: true,
     lastFpsUpdate: 0,
+    miningListenerAttached: false,
     inventoryOpen: false,
     escMenuOpen: false,
     currentSaveName: null
@@ -67,10 +68,10 @@ export function frame(SEED, ctx, canvas, camera, tileSize, then, fpsElement) {
     // compute fps
     let fps = 1 / elapsedTime;
     const nowMs = Date.now();
-	if (nowMs - GameState.lastFpsUpdate > 250) {
-		fpsElement.innerText = fps.toFixed(1);
-		GameState.lastFpsUpdate = nowMs;
-	}
+    if (nowMs - GameState.lastFpsUpdate > 250) {
+        fpsElement.innerText = fps.toFixed(1);
+        GameState.lastFpsUpdate = nowMs;
+    }
 
     camera.updateWorldPosition(tileSize, canvas);
 
@@ -85,7 +86,7 @@ export function frame(SEED, ctx, canvas, camera, tileSize, then, fpsElement) {
     }
 
     if (processChunkQueue(SEED, 2)) GameState.needsRedraw = true;
-	Chunks.unloadChunksOutsideRange(cx, cy, 7);
+    Chunks.unloadChunksOutsideRange(cx, cy, 7);
 
     if (GameState.needsRedraw) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);

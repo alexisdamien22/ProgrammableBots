@@ -10,6 +10,7 @@ import { initHandTracking } from "./ui/handManager.js";
 import { inventoryState } from "./ui/inventoryManager.js";
 import { renderSlotContent } from "./ui/inventoryUI.js";
 import { saveGameToDB, loadGameFromDB, listAllSaves, deleteGameFromDB } from "./world/saveDatabase.js";
+import { toGrid } from "./core/isometricTransformations.js";
 
 //for every page to load
 function loadPage(pageFn) {
@@ -149,7 +150,7 @@ function createMainMenu() {
     });
 
     root.querySelector("#quitButton").addEventListener("click", () => {
-        alert("Impossible de quitter depuis un navigateur");
+        alert("Impossible de quitter depuis un navigateur (vous pouvez faire alt + F4 ;D )");
     });
 
     return root;
@@ -279,6 +280,7 @@ function createSavesPage() {
                 // initialize camera event handlers
                 camera.init(canvas, () => {
                     GameState.needsRedraw = true;
+                    setupMiningListener(canvas, camera);
                 });
 
                 // restore saved camera position/zoom if present
@@ -509,58 +511,56 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
-document.addEventListener("contextmenu", (e) => {
+function onRightClickMine(e, canvas, camera) {
     e.preventDefault();
 
-    const rect = document.getBoundingClientRect();
+    const rect = canvas.getBoundingClientRect();
     const screenX = e.clientX - rect.left;
     const screenY = e.clientY - rect.top;
 
-    // écran → monde
-    const wx = Math.floor(screenX + camera.x);
-    const wy = Math.floor(screenY + camera.y);
+    const world = toGrid(
+        screenX,
+        screenY,
+        tileSize,
+        camera.zoom,
+        camera.offsetX,
+        camera.offsetY
+    );
+
+    const tileX = Math.floor(world.x / tileSize);
+    const tileY = Math.floor(world.y / tileSize);
 
     const CHUNK_SIZE = 16;
 
-    // monde → chunk
-    const cx = Math.floor(wx / CHUNK_SIZE) * CHUNK_SIZE;
-    const cy = Math.floor(wy / CHUNK_SIZE) * CHUNK_SIZE;
+    const cx = Math.floor(tileX / CHUNK_SIZE) * CHUNK_SIZE;
+    const cy = Math.floor(tileY / CHUNK_SIZE) * CHUNK_SIZE;
 
-    const x = wx - cx;
-    const y = wy - cy;
+    const x = tileX - cx;
+    const y = tileY - cy;
 
-    const chunk = getChunk(cx, cy);
+    const chunk = Chunks.get(cx, cy);
     if (!chunk) return;
 
-    const block = chunk.blocks[y][x];
+    const block = chunk.grid[y]?.[x];
     if (!block) return;
 
-    if (block.type === "iron") {
-        // ajouter à l’inventaire
-        player.inventory.add(block.oreType, 1);
+    const ores = ["iron", "copper", "helionite", "noxalite", "avitrine"];
 
-        console.log("Minerai récupéré :", block.oreType);
-    }else if (block.type === "copper") {
-        // ajouter à l’inventaire
-        player.inventory.add(block.oreType, 1);
-
-        console.log("Minerai récupéré :", block.oreType);
-    }else if (block.type === "helionite") {
-        // ajouter à l’inventaire
-        player.inventory.add(block.oreType, 1);
-
-        console.log("Minerai récupéré :", block.oreType);
-    }else if (block.type === "noxalite") {
-        // ajouter à l’inventaire
-        player.inventory.add(block.oreType, 1);
-
-        console.log("Minerai récupéré :", block.oreType);
-    }else if (block.type === "avitrine") {
-        // ajouter à l’inventaire
-        player.inventory.add(block.oreType, 1);
-
-        console.log("Minerai récupéré :", block.oreType);
+    if (ores.includes(block.type)) {
+        console.log("Minerai récupéré :", block.type);
+        player.inventory.add(block.type, 1);
+    } else {
+        console.log("Aucun minerai à cet endroit.");
     }
-});
+}
+
+let miningListenerAttached = false;
+
+function setupMiningListener(canvas, camera) {
+    if (GameState.miningListenerAttached) return;
+    GameState.miningListenerAttached = true;
+
+    canvas.addEventListener("contextmenu", (e) => onRightClickMine(e, canvas, camera));
+}
 
 loadPage(createMainMenu);

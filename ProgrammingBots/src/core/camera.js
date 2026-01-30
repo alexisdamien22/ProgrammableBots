@@ -1,5 +1,7 @@
 import { toScreen } from "./isometricTransformations.js";
 import { toGrid } from "./isometricTransformations.js";
+import { Chunks } from "../world/chunks.js";
+import { tileSize } from "../world/worldVars.js";
 
 export const camera = {
     zoom: 1,
@@ -63,6 +65,7 @@ export const camera = {
         };
 
         this._mouseDownHandler = (event) => {
+            if (event.button !== 0) return; // only left button
             this.isDragging = true;
             this.lastX = event.clientX;
             this.lastY = event.clientY;
@@ -102,6 +105,7 @@ export const camera = {
         canvas.addEventListener("mousemove", this._mouseMoveHandler);
         canvas.addEventListener("mouseup", this._mouseUpHandler);
         canvas.addEventListener("mouseleave", this._mouseLeaveHandler);
+
 
         window.addEventListener("resize", this._resizeHandler);
 

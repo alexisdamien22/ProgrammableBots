@@ -6,11 +6,15 @@ export function toScreen(x, y, tileSize, zoom, offsetX, offsetY) {
 }
 
 export function toGrid(screenX, screenY, tileSize, zoom, offsetX, offsetY) {
-    const x = (screenX - offsetX) / zoom;
-    const y = (screenY - offsetY) / zoom;
+    // convert to screen-space relative to camera
+    const sx = (screenX - offsetX) / (tileSize * zoom);
+    const sy = (screenY - offsetY) / (tileSize * zoom / 2);
 
-    const gx = Math.floor((y / tileSize) + (x / (2 * tileSize)));
-    const gy = Math.floor((y / tileSize) - (x / (2 * tileSize)));
+    // invert the isometric projection
+    const gx = (sy + sx) / 2;
+    const gy = (sy - sx) / 2;
 
     return { x: gx, y: gy };
 }
+
+
